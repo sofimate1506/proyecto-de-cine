@@ -1,0 +1,41 @@
+drop table IF EXISTS empleados;
+CREATE TABLE IF NOT EXISTS empleados (
+    id              TEXT primary key,
+    nombre          TEXT NOT NULL,
+    apellido        TEXT NOT NULL,
+    correo          TEXT UNIQUE NOT NULL,
+    password_hash   TEXT NOT NULL,
+    activo          BOOLEAN DEFAULT TRUE,
+    creado_en       TIMESTAMPTZ DEFAULT NOW()
+);
+
+INSERT INTO empleados ( id,nombre, apellido, correo, password_hash ) VALUES
+('CM2026','Carlos','Mendez','carlosmendez@gmail.com','MVR-1510'),
+('LC2026','Laura','Castillo','lauracastillo@gmail.com','MVR-0812'),
+('AR2026','Andres', 'Rodriguez','andresrodriguez@gmail.com','MVR-1270');
+
+ALTER TABLE empleados ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "empleado_ver_solo_el_suyo"
+ON empleados FOR SELECT
+USING (correo = current_user);
+
+CREATE POLICY "empleado_editar_solo_el_suyo"
+ON empleados FOR UPDATE
+USING (correo = current_user)
+WITH CHECK (correo = current_user);
+
+CREATE OR REPLACE FUNCTION bloquear_insert_empleados()
+RETURNS TRIGGER AS $$
+BEGIN
+    RAISE EXCEPTION 'No se pueden registrar nuevos empleados desde este sistema.';
+    RETURN NULL;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER trigger_bloquear_registro
+BEFORE INSERT ON empleados
+FOR EACH ROW EXECUTE FUNCTION bloquear_insert_empleados();
+
+SELECT id, nombre, apellido, activo, creado_en
+FROM empleados;
