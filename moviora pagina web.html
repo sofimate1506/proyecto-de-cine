@@ -1,0 +1,1789 @@
+bash
+
+cat > /mnt/user-data/outputs/moviora_cines.html << 'HTMLEOF'
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MOVIORA CINES</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;0,900;1,400;1,700&family=Josefin+Sans:wght@100;300;400;600;700&family=EB+Garamond:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+<style>
+:root{
+  --rosa:#F7E4DF;--rojo:#C02B1A;--rojo-osc:#8f1e0f;--terra:#C96A50;--terra-osc:#A64A35;
+  --marino:#1C3350;--marino-deep:#0d1f32;--blanco:#fff;--texto:#1C3350;--suave:#7a5a52;
+  --sombra:rgba(28,51,80,.12);--borde:rgba(28,51,80,.1);
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{font-family:'Josefin Sans',sans-serif;color:var(--texto);background:var(--rosa);overflow-x:hidden;}
+body::after{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");opacity:.022;pointer-events:none;z-index:9999;}
+::-webkit-scrollbar{width:6px;}::-webkit-scrollbar-track{background:var(--rosa);}::-webkit-scrollbar-thumb{background:var(--terra);border-radius:3px;}
+.view{display:none;}.view.active{display:block;}
+
+/* ===== NAV ===== */
+nav#main-nav{position:fixed;top:0;left:0;right:0;z-index:300;background:rgba(13,31,50,.97);backdrop-filter:blur(12px);height:70px;display:flex;align-items:center;justify-content:space-between;padding:0 2rem;border-bottom:1px solid rgba(201,106,80,.2);}
+.nav-logo{display:flex;align-items:center;gap:9px;cursor:pointer;}
+.logo-svg{width:34px;height:34px;flex-shrink:0;}
+.logo-name{font-family:'Playfair Display',serif;font-weight:900;font-size:1.35rem;color:#fff;letter-spacing:.1em;}
+.logo-dot{color:var(--terra);}
+.logo-sub{font-family:'Josefin Sans',sans-serif;font-weight:100;font-size:.5rem;letter-spacing:.45em;color:var(--terra);display:block;margin-top:1px;}
+.nav-links{display:flex;align-items:center;gap:.4rem;}
+.nav-link{font-family:'Josefin Sans',sans-serif;font-weight:300;font-size:.76rem;letter-spacing:.12em;color:rgba(255,255,255,.75);padding:.4rem .8rem;transition:color .2s;cursor:pointer;text-transform:uppercase;background:none;border:none;}
+.nav-link:hover{color:var(--terra);}
+.nav-div{width:1px;height:18px;background:rgba(255,255,255,.15);}
+.btn-nav{padding:.42rem 1rem;border-radius:3px;font-family:'Josefin Sans',sans-serif;font-size:.72rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;cursor:pointer;transition:all .2s;border:none;}
+.btn-outline{background:transparent;border:1px solid rgba(255,255,255,.3);color:rgba(255,255,255,.85);}
+.btn-outline:hover{border-color:var(--terra);color:var(--terra);}
+.btn-solid{background:var(--rojo);color:#fff;}
+.btn-solid:hover{background:var(--rojo-osc);}
+.btn-emp{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.18);color:rgba(255,255,255,.6);padding:.42rem .9rem;border-radius:3px;font-family:'Josefin Sans',sans-serif;font-size:.68rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;cursor:pointer;transition:all .2s;}
+.btn-emp:hover{background:rgba(201,106,80,.15);border-color:var(--terra);color:var(--terra);}
+/* Carrito nav icon */
+.cart-icon-btn{position:relative;background:none;border:none;cursor:pointer;color:rgba(255,255,255,.7);display:flex;align-items:center;gap:5px;padding:.3rem .6rem;transition:color .2s;}
+.cart-icon-btn:hover{color:var(--terra);}
+.cart-badge{position:absolute;top:-4px;right:-4px;background:var(--rojo);color:#fff;border-radius:50%;width:16px;height:16px;font-size:.55rem;display:flex;align-items:center;justify-content:center;font-weight:700;font-family:'Josefin Sans',sans-serif;display:none;}
+.cart-badge.show{display:flex;}
+/* Avatar */
+.nav-avatar{width:32px;height:32px;border-radius:50%;background:var(--terra);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.78rem;cursor:pointer;position:relative;font-family:'Josefin Sans',sans-serif;}
+.nav-dropdown{position:absolute;top:calc(100% + 10px);right:0;background:#fff;border-radius:6px;box-shadow:0 10px 40px rgba(0,0,0,.18);min-width:170px;overflow:hidden;display:none;z-index:400;}
+.nav-avatar:hover .nav-dropdown{display:block;}
+.nav-dropdown a{display:block;padding:.7rem 1rem;font-size:.76rem;letter-spacing:.05em;color:var(--texto);text-decoration:none;transition:background .15s;cursor:pointer;font-family:'Josefin Sans',sans-serif;}
+.nav-dropdown a:hover{background:var(--rosa);}
+/* Locations */
+.loc-wrap{position:relative;}
+.loc-btn{display:flex;align-items:center;gap:4px;font-family:'Josefin Sans',sans-serif;font-weight:300;font-size:.76rem;letter-spacing:.12em;color:rgba(255,255,255,.75);cursor:pointer;padding:.4rem .8rem;transition:color .2s;text-transform:uppercase;background:none;border:none;}
+.loc-btn:hover,.loc-btn.open{color:var(--terra);}
+.loc-btn svg{transition:transform .2s;}
+.loc-btn.open svg{transform:rotate(180deg);}
+.loc-panel{position:absolute;top:calc(100% + 14px);right:0;background:var(--marino-deep);border:1px solid rgba(201,106,80,.25);border-radius:8px;box-shadow:0 20px 60px rgba(0,0,0,.4);min-width:540px;display:none;z-index:400;overflow:hidden;}
+.loc-panel.open{display:block;}
+.loc-ph{padding:.8rem 1.4rem .5rem;border-bottom:1px solid rgba(255,255,255,.07);}
+.loc-ph p{font-size:.62rem;letter-spacing:.2em;color:var(--terra);text-transform:uppercase;font-weight:700;}
+.loc-grid{display:grid;grid-template-columns:1fr 1fr 1fr;max-height:400px;overflow-y:auto;}
+.loc-col{padding:.8rem 1.1rem;border-right:1px solid rgba(255,255,255,.05);}
+.loc-col:last-child{border-right:none;}
+.loc-col-title{font-size:.6rem;letter-spacing:.18em;color:var(--terra);text-transform:uppercase;font-weight:700;margin-bottom:.55rem;padding-bottom:.35rem;border-bottom:1px solid rgba(201,106,80,.18);}
+.loc-item{display:flex;align-items:flex-start;gap:7px;padding:.32rem 0;cursor:pointer;transition:all .15s;}
+.loc-dot{width:4px;height:4px;border-radius:50%;background:rgba(201,106,80,.4);flex-shrink:0;margin-top:5px;transition:background .15s;}
+.loc-item:hover .loc-dot{background:var(--terra);}
+.loc-city{font-size:.76rem;color:rgba(255,255,255,.6);transition:color .15s;letter-spacing:.04em;}
+.loc-country{font-size:.6rem;color:rgba(255,255,255,.28);letter-spacing:.04em;}
+.loc-item:hover .loc-city{color:var(--terra);}
+
+/* ===== HERO ===== */
+.hero{min-height:100vh;background:linear-gradient(150deg,var(--marino-deep) 0%,#0a1520 55%,#1a1225 100%);display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;position:relative;overflow:hidden;padding:2rem;}
+.hero-orb1{position:absolute;top:-10%;right:-5%;width:500px;height:500px;border-radius:50%;background:radial-gradient(circle,rgba(201,106,80,.12) 0%,transparent 70%);pointer-events:none;}
+.hero-orb2{position:absolute;bottom:-15%;left:-8%;width:600px;height:600px;border-radius:50%;background:radial-gradient(circle,rgba(192,43,26,.08) 0%,transparent 70%);pointer-events:none;}
+.hero-welcome{font-family:'Josefin Sans',sans-serif;font-weight:100;font-size:.72rem;letter-spacing:.5em;color:var(--terra);text-transform:uppercase;margin-bottom:1.2rem;animation:fadeUp .7s ease both;opacity:0;}
+.hero-logo{font-family:'Playfair Display',serif;font-weight:900;font-size:clamp(5rem,12vw,9rem);color:#fff;letter-spacing:.08em;line-height:.9;animation:fadeUp .7s .1s ease both;opacity:0;}
+.hero-cines{font-family:'Josefin Sans',sans-serif;font-weight:100;font-size:clamp(.8rem,2vw,1.1rem);letter-spacing:.7em;color:rgba(255,255,255,.35);margin-top:.7rem;animation:fadeUp .7s .18s ease both;opacity:0;text-transform:uppercase;}
+.hero-tagline{font-family:'EB Garamond',serif;font-style:italic;font-size:clamp(1rem,2.2vw,1.3rem);color:rgba(255,255,255,.55);margin-top:1.8rem;animation:fadeUp .7s .26s ease both;opacity:0;}
+.hero-line{width:36px;height:1px;background:var(--terra);margin:1.4rem auto;animation:fadeUp .7s .3s ease both;opacity:0;}
+.hero-btns{display:flex;gap:.9rem;animation:fadeUp .7s .38s ease both;opacity:0;flex-wrap:wrap;justify-content:center;}
+.btn-hero{padding:.88rem 2.2rem;border-radius:3px;font-family:'Josefin Sans',sans-serif;font-size:.78rem;font-weight:700;letter-spacing:.15em;text-transform:uppercase;cursor:pointer;transition:all .25s;border:none;}
+.btn-primary{background:var(--rojo);color:#fff;}.btn-primary:hover{background:var(--rojo-osc);transform:translateY(-2px);}
+.btn-secondary{background:transparent;border:1px solid rgba(255,255,255,.35);color:#fff;}.btn-secondary:hover{border-color:var(--terra);color:var(--terra);}
+.film-strip{position:absolute;bottom:0;left:0;right:0;height:34px;background:rgba(0,0,0,.5);display:flex;overflow:hidden;}
+.film-strip-inner{display:flex;animation:filmScroll 14s linear infinite;}
+.film-hole{width:26px;height:16px;border:1.5px solid rgba(255,255,255,.13);border-radius:2px;margin:9px 4px;flex-shrink:0;}
+.stars-bg{position:absolute;inset:0;overflow:hidden;pointer-events:none;}
+.star{position:absolute;border-radius:50%;background:#fff;animation:twinkle 3s ease-in-out infinite;}
+/* Welcome logged in hero */
+.hero-user-panel{display:none;margin-top:2rem;animation:fadeUp .6s .4s ease both;opacity:0;}
+.hero-user-panel.show{display:flex;gap:1rem;flex-wrap:wrap;justify-content:center;}
+.hero-nav-card{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.15);border-radius:10px;padding:1rem 1.5rem;cursor:pointer;transition:all .2s;text-align:center;min-width:130px;}
+.hero-nav-card:hover{background:rgba(201,106,80,.15);border-color:var(--terra);}
+.hero-nav-card svg{display:block;margin:0 auto .5rem;}
+.hero-nav-card span{font-family:'Josefin Sans',sans-serif;font-size:.72rem;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.8);}
+
+/* ===== SECTION ===== */
+.section{padding:5.5rem 2rem;}
+.eyebrow{font-family:'Josefin Sans',sans-serif;font-weight:300;font-size:.63rem;letter-spacing:.4em;text-transform:uppercase;color:var(--terra);margin-bottom:.5rem;}
+.section-title{font-family:'Playfair Display',serif;font-size:clamp(2rem,4vw,2.7rem);font-weight:700;color:var(--marino);margin-bottom:.4rem;line-height:1.1;}
+.section-sub{color:var(--suave);font-size:.8rem;letter-spacing:.05em;margin-bottom:2.8rem;}
+.container{max-width:1280px;margin:0 auto;}
+
+/* ===== CARTELERA ===== */
+.cartelera-bg{background:#fff;}
+.movies-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:1.4rem;}
+.movie-card{background:#fff;border-radius:10px;overflow:hidden;box-shadow:0 4px 22px var(--sombra);transition:all .3s;cursor:pointer;border:1px solid var(--borde);}
+.movie-card:hover{transform:translateY(-6px);box-shadow:0 16px 46px rgba(28,51,80,.18);}
+/* Poster placeholder */
+.movie-poster{aspect-ratio:2/3;overflow:hidden;position:relative;display:flex;align-items:center;justify-content:center;}
+.poster-placeholder{width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:1rem;text-align:center;position:relative;overflow:hidden;}
+.poster-placeholder::before{content:'';position:absolute;inset:0;opacity:.35;}
+.poster-genre-icon{margin-bottom:.7rem;opacity:.9;}
+.poster-title{font-family:'Playfair Display',serif;font-size:.95rem;font-weight:700;color:#fff;line-height:1.2;text-shadow:0 2px 8px rgba(0,0,0,.4);z-index:1;position:relative;}
+.poster-rating{position:absolute;bottom:8px;right:8px;background:rgba(0,0,0,.55);color:#fff;font-family:'Josefin Sans',sans-serif;font-size:.65rem;font-weight:700;padding:2px 7px;border-radius:3px;backdrop-filter:blur(4px);}
+.sala-badge{position:absolute;top:8px;left:8px;padding:3px 9px;border-radius:3px;font-family:'Josefin Sans',sans-serif;font-size:.6rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;}
+.sala-estandar{background:var(--marino);color:#fff;}
+.sala-vip{background:var(--terra);color:#fff;}
+.sala-4dx{background:var(--rojo);color:#fff;}
+.movie-info{padding:1rem;}
+.movie-title{font-family:'Playfair Display',serif;font-size:1rem;font-weight:700;color:var(--marino);margin-bottom:.3rem;line-height:1.2;}
+.movie-meta{display:flex;gap:.35rem;flex-wrap:wrap;margin-bottom:.45rem;}
+.meta-tag{font-size:.6rem;letter-spacing:.06em;color:var(--suave);background:var(--rosa);padding:2px 6px;border-radius:2px;text-transform:uppercase;}
+.ocu-label{font-size:.63rem;color:var(--suave);margin-bottom:.35rem;letter-spacing:.03em;}
+.ocupacion-bar{height:3px;background:#eee;border-radius:2px;margin-bottom:.5rem;overflow:hidden;}
+.ocupacion-fill{height:100%;border-radius:2px;transition:width .5s;}
+.ocu-low{background:#22c55e;}.ocu-mid{background:#f59e0b;}.ocu-high{background:#ef4444;}
+.horarios{display:flex;flex-wrap:wrap;gap:3px;margin-bottom:.75rem;}
+.horario-btn{padding:3px 7px;border:1px solid var(--marino);border-radius:3px;font-size:.65rem;cursor:pointer;background:transparent;color:var(--marino);transition:all .15s;font-family:'Josefin Sans',sans-serif;letter-spacing:.04em;}
+.horario-btn:hover{background:var(--marino);color:#fff;}
+.horario-btn.lleno{border-color:#ef4444;color:#ef4444;cursor:not-allowed;}
+.price-tag{font-size:.73rem;color:var(--suave);margin-bottom:.65rem;letter-spacing:.03em;}
+.price-tag strong{color:var(--rojo);font-size:.88rem;font-family:'Playfair Display',serif;}
+.btn-comprar{width:100%;padding:.58rem;background:var(--rojo);color:#fff;border:none;border-radius:4px;font-family:'Josefin Sans',sans-serif;font-size:.72rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;cursor:pointer;transition:all .2s;}
+.btn-comprar:hover{background:var(--rojo-osc);}
+
+/* ===== COMIDA ===== */
+.comida-bg{background:var(--rosa);}
+.comida-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(175px,1fr));gap:1.2rem;}
+.comida-card{background:#fff;border-radius:10px;padding:1.4rem 1rem;text-align:center;box-shadow:0 4px 18px var(--sombra);border:1px solid var(--borde);transition:all .25s;cursor:pointer;}
+.comida-card:hover{transform:translateY(-4px);box-shadow:0 12px 36px rgba(28,51,80,.16);}
+.comida-card.selected{border:2px solid var(--terra);background:rgba(201,106,80,.04);}
+.comida-svg-wrap{width:70px;height:70px;margin:0 auto 1rem;display:flex;align-items:center;justify-content:center;}
+.comida-name{font-family:'Playfair Display',serif;font-size:1rem;font-weight:700;color:var(--marino);margin-bottom:.2rem;}
+.comida-desc{font-size:.68rem;color:var(--suave);letter-spacing:.03em;margin-bottom:.7rem;line-height:1.5;}
+.comida-precio{font-family:'Playfair Display',serif;font-size:1.2rem;font-weight:700;color:var(--rojo);}
+.comida-precio span{font-family:'Josefin Sans',sans-serif;font-size:.72rem;font-weight:400;}
+.comida-qty{display:flex;align-items:center;justify-content:center;gap:.6rem;margin-top:.7rem;}
+.qty-btn{width:26px;height:26px;border-radius:50%;border:1.5px solid var(--marino);background:transparent;color:var(--marino);cursor:pointer;font-size:.9rem;display:flex;align-items:center;justify-content:center;transition:all .15s;font-family:'Josefin Sans',sans-serif;}
+.qty-btn:hover{background:var(--marino);color:#fff;}
+.qty-num{font-family:'Josefin Sans',sans-serif;font-weight:700;font-size:.88rem;min-width:18px;text-align:center;}
+
+/* ===== PRECIOS ===== */
+.precios-bg{background:#fff;}
+.precios-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:1.3rem;}
+.precio-card{background:#fff;border-radius:10px;padding:1.5rem 1.1rem;text-align:center;box-shadow:0 4px 16px var(--sombra);border:1px solid var(--borde);transition:all .25s;}
+.precio-card:hover{transform:translateY(-3px);}
+.precio-icon-w{width:42px;height:42px;border-radius:50%;background:var(--rosa);display:flex;align-items:center;justify-content:center;margin:0 auto .85rem;}
+.precio-icon-w svg{width:20px;height:20px;stroke:var(--terra);}
+.precio-sala{font-family:'Playfair Display',serif;font-size:1.15rem;font-weight:700;color:var(--marino);}
+.precio-tipo{font-size:.66rem;letter-spacing:.1em;text-transform:uppercase;color:var(--suave);margin-bottom:.8rem;font-family:'Josefin Sans',sans-serif;}
+.precio-monto{font-family:'Playfair Display',serif;font-size:1.85rem;font-weight:700;color:var(--rojo);}
+.precio-monto span{font-size:.8rem;font-weight:400;font-family:'Josefin Sans',sans-serif;}
+
+/* ===== FOOTER ===== */
+footer{background:var(--marino-deep);color:#fff;padding:3.5rem 2rem 2rem;}
+.footer-grid{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:2.5rem;margin-bottom:2.5rem;}
+.footer-logo-n{font-family:'Playfair Display',serif;font-weight:900;font-size:1.8rem;letter-spacing:.08em;}
+.footer-logo-s{font-family:'Josefin Sans',sans-serif;font-weight:100;font-size:.58rem;letter-spacing:.4em;color:var(--terra);text-transform:uppercase;}
+.footer-brand p{font-size:.76rem;opacity:.58;line-height:1.7;margin-top:.9rem;font-family:'Josefin Sans',sans-serif;font-weight:300;}
+.footer-col h4{font-family:'Josefin Sans',sans-serif;font-weight:300;font-size:.6rem;letter-spacing:.2em;opacity:.38;text-transform:uppercase;margin-bottom:1.1rem;}
+.footer-col a{display:block;color:rgba(255,255,255,.6);text-decoration:none;font-size:.76rem;margin-bottom:.55rem;cursor:pointer;transition:color .2s;font-family:'Josefin Sans',sans-serif;font-weight:300;letter-spacing:.04em;}
+.footer-col a:hover{color:var(--terra);}
+.footer-bottom{border-top:1px solid rgba(255,255,255,.07);padding-top:1.5rem;display:flex;justify-content:space-between;font-size:.7rem;opacity:.38;font-family:'Josefin Sans',sans-serif;font-weight:300;letter-spacing:.06em;}
+
+/* ===== AUTH ===== */
+.auth-bg{min-height:100vh;background:var(--rosa);display:flex;align-items:center;justify-content:center;padding:2rem;padding-top:90px;}
+.auth-card{background:#fff;border-radius:12px;padding:2.4rem;max-width:420px;width:100%;box-shadow:0 12px 50px var(--sombra);border:1px solid var(--borde);}
+.auth-logo-n{font-family:'Playfair Display',serif;font-weight:900;font-size:2.1rem;color:var(--marino);letter-spacing:.1em;text-align:center;}
+.auth-logo-s{font-family:'Josefin Sans',sans-serif;font-weight:100;font-size:.58rem;letter-spacing:.4em;color:var(--terra);text-transform:uppercase;text-align:center;margin-top:2px;}
+.auth-div{font-family:'Josefin Sans',sans-serif;font-weight:300;font-size:.6rem;letter-spacing:.3em;color:var(--suave);text-transform:uppercase;margin-top:5px;text-align:center;margin-bottom:1.8rem;}
+.form-group{margin-bottom:1rem;}
+.form-group label{display:block;font-family:'Josefin Sans',sans-serif;font-weight:700;font-size:.65rem;letter-spacing:.12em;text-transform:uppercase;color:var(--suave);margin-bottom:.38rem;}
+.form-group input,.form-group select,.form-group textarea{width:100%;padding:.68rem 1rem;border:1.5px solid #e2d9d6;border-radius:6px;font-family:'Josefin Sans',sans-serif;font-size:.84rem;transition:border-color .2s;outline:none;color:var(--texto);background:#fff;}
+.form-group input:focus,.form-group select:focus,.form-group textarea:focus{border-color:var(--terra);}
+.form-group.half{width:calc(50% - .5rem);}
+.form-row{display:flex;gap:1rem;flex-wrap:wrap;}
+.btn-auth{width:100%;padding:.82rem;background:var(--rojo);color:#fff;border:none;border-radius:6px;font-family:'Josefin Sans',sans-serif;font-size:.76rem;font-weight:700;letter-spacing:.15em;text-transform:uppercase;cursor:pointer;transition:all .2s;margin-top:.4rem;}
+.btn-auth:hover{background:var(--rojo-osc);}
+.auth-link{text-align:center;margin-top:1.1rem;font-size:.78rem;font-family:'Josefin Sans',sans-serif;color:var(--suave);}
+.auth-link a{color:var(--rojo);text-decoration:none;font-weight:700;cursor:pointer;}
+.strength-bar{height:3px;border-radius:2px;margin-top:5px;transition:all .3s;}
+.strength-bar.weak{width:33%;background:#ef4444;}.strength-bar.medium{width:66%;background:#f59e0b;}.strength-bar.strong{width:100%;background:#22c55e;}
+.field-valid{border-color:#22c55e!important;}.field-invalid{border-color:#ef4444!important;}
+.error-box{background:#fee2e2;color:#7f1d1d;padding:.6rem 1rem;border-radius:6px;font-size:.76rem;margin-bottom:.8rem;font-family:'Josefin Sans',sans-serif;display:none;}
+
+/* ===== EMP LOGIN ===== */
+.emp-login-bg{min-height:100vh;display:flex;}
+.emp-left{background:var(--marino);flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:3rem;position:relative;overflow:hidden;}
+.emp-left::before{content:'';position:absolute;top:-100px;right:-100px;width:380px;height:380px;border-radius:50%;border:1px solid rgba(255,255,255,.04);}
+.emp-left::after{content:'';position:absolute;bottom:-80px;left:-80px;width:280px;height:280px;border-radius:50%;border:1px solid rgba(201,106,80,.08);}
+.emp-logo-big{font-family:'Playfair Display',serif;font-size:3.3rem;font-weight:900;color:#fff;letter-spacing:.1em;}
+.emp-tagline{color:rgba(255,255,255,.5);font-family:'EB Garamond',serif;font-style:italic;font-size:.95rem;margin-top:1rem;text-align:center;line-height:1.7;}
+.emp-right{flex:1;background:#fff;display:flex;align-items:center;justify-content:center;padding:3rem;}
+.emp-form-wrap{max-width:370px;width:100%;}
+.emp-form-title{font-family:'Playfair Display',serif;font-size:1.75rem;color:var(--marino);margin-bottom:.3rem;}
+.emp-form-sub{font-family:'Josefin Sans',sans-serif;font-weight:300;font-size:.68rem;letter-spacing:.15em;color:var(--suave);text-transform:uppercase;margin-bottom:1.8rem;}
+.demo-quick{background:rgba(28,51,80,.04);border:1px solid rgba(28,51,80,.1);border-radius:8px;padding:.85rem;margin-bottom:1rem;}
+.demo-quick-title{font-family:'Josefin Sans',sans-serif;font-size:.6rem;letter-spacing:.15em;text-transform:uppercase;color:var(--suave);margin-bottom:.6rem;font-weight:700;}
+.demo-btn{width:100%;text-align:left;padding:.48rem .75rem;border:1px solid #e2d9d6;border-radius:5px;background:#fff;cursor:pointer;font-family:'Josefin Sans',sans-serif;font-size:.76rem;transition:all .15s;margin-bottom:.35rem;display:flex;align-items:center;gap:.6rem;}
+.demo-btn:last-child{margin-bottom:0;}
+.demo-btn:hover{border-color:var(--terra);}
+.demo-btn strong{color:var(--marino);}
+.demo-btn span{color:var(--suave);font-size:.68rem;}
+.demo-rol{font-size:.6rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;padding:1px 6px;border-radius:2px;}
+.demo-rol.admin{background:rgba(28,51,80,.1);color:var(--marino);}
+.demo-rol.taquilla{background:rgba(201,106,80,.15);color:var(--terra-osc);}
+.demo-rol.proyeccion{background:rgba(192,43,26,.1);color:var(--rojo-osc);}
+
+/* ===== DASHBOARD ===== */
+.dashboard-bg{padding-top:70px;min-height:100vh;background:#eef2f7;}
+.dash-topnav{position:fixed;top:70px;left:0;right:0;z-index:200;background:var(--marino);display:flex;border-bottom:1px solid rgba(255,255,255,.07);}
+.dash-tab{padding:.85rem 1.5rem;font-family:'Josefin Sans',sans-serif;font-weight:300;font-size:.72rem;letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,.45);cursor:pointer;border-bottom:2px solid transparent;transition:all .2s;}
+.dash-tab.active{color:#fff;border-color:var(--terra);}
+.hidden-tab{display:none;}
+.dash-content{padding:2rem;}
+.stats-row{display:grid;grid-template-columns:repeat(auto-fill,minmax(148px,1fr));gap:.9rem;margin-bottom:1.8rem;}
+.stat-card{background:#fff;border-radius:9px;padding:1.1rem;box-shadow:0 2px 12px var(--sombra);border:1px solid var(--borde);}
+.stat-num{font-family:'Playfair Display',serif;font-size:2rem;font-weight:700;color:var(--marino);}
+.stat-lbl{font-family:'Josefin Sans',sans-serif;font-weight:300;font-size:.62rem;letter-spacing:.1em;text-transform:uppercase;color:var(--suave);margin-top:3px;}
+.dash-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(235px,1fr));gap:1.4rem;}
+.dash-movie-card{background:#fff;border-radius:9px;overflow:hidden;box-shadow:0 2px 12px var(--sombra);border:1px solid var(--borde);}
+.dash-poster{aspect-ratio:16/9;overflow:hidden;position:relative;}
+.dash-poster-ph{width:100%;height:100%;display:flex;align-items:center;justify-content:center;padding:.5rem;}
+.dash-poster-ph-title{font-family:'Playfair Display',serif;font-size:.85rem;font-weight:700;color:#fff;text-align:center;line-height:1.2;text-shadow:0 2px 6px rgba(0,0,0,.4);}
+.dash-movie-info{padding:.9rem;}
+/* Salas */
+.salas-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(275px,1fr));gap:1.4rem;}
+.sala-card{background:#fff;border-radius:9px;padding:1.4rem;box-shadow:0 2px 12px var(--sombra);border:1px solid var(--borde);}
+.sala-tipo-badge{display:inline-block;padding:3px 10px;border-radius:20px;font-family:'Josefin Sans',sans-serif;font-size:.62rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;margin-bottom:.75rem;}
+.sala-precio-grid{display:grid;grid-template-columns:1fr 1fr;gap:.45rem;margin-top:.75rem;}
+.sala-precio-item{background:var(--rosa);padding:.6rem;border-radius:5px;font-family:'Josefin Sans',sans-serif;font-size:.7rem;text-align:center;color:var(--suave);}
+.sala-precio-item strong{display:block;color:var(--rojo);font-family:'Playfair Display',serif;font-size:.95rem;}
+.sala-stat-bar{height:5px;border-radius:3px;background:#e5e7eb;overflow:hidden;margin:.5rem 0;}
+.sala-stat-fill{height:100%;border-radius:3px;transition:width .4s;}
+.btn-edit{padding:.42rem .9rem;background:transparent;border:1px solid var(--marino);color:var(--marino);border-radius:4px;cursor:pointer;font-family:'Josefin Sans',sans-serif;font-size:.68rem;letter-spacing:.08em;text-transform:uppercase;margin-top:.9rem;transition:all .2s;}
+.btn-edit:hover{background:var(--marino);color:#fff;}
+/* Emp table */
+.emp-table-wrap{background:#fff;border-radius:9px;box-shadow:0 2px 12px var(--sombra);overflow:hidden;border:1px solid var(--borde);}
+.emp-table{width:100%;border-collapse:collapse;}
+.emp-table th{background:var(--marino);color:#fff;padding:.85rem 1rem;text-align:left;font-family:'Josefin Sans',sans-serif;font-size:.65rem;letter-spacing:.12em;text-transform:uppercase;font-weight:600;}
+.emp-table td{padding:.82rem 1rem;border-bottom:1px solid #f5f5f5;font-family:'Josefin Sans',sans-serif;font-size:.8rem;}
+.emp-table tr:hover td{background:#fafafa;}
+.rol-badge{padding:2px 9px;border-radius:20px;font-family:'Josefin Sans',sans-serif;font-size:.62rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;}
+.rol-admin{background:rgba(28,51,80,.1);color:var(--marino);}
+.rol-taquilla{background:rgba(201,106,80,.15);color:var(--terra-osc);}
+.rol-proyeccion{background:rgba(192,43,26,.1);color:var(--rojo-osc);}
+.rol-limpieza{background:rgba(28,51,80,.06);color:var(--marino);}
+.status-dot{width:7px;height:7px;border-radius:50%;display:inline-block;margin-right:4px;}
+/* Orders table in dashboard */
+.orders-table{width:100%;border-collapse:collapse;font-family:'Josefin Sans',sans-serif;font-size:.78rem;}
+.orders-table th{background:var(--marino);color:#fff;padding:.8rem 1rem;text-align:left;font-size:.63rem;letter-spacing:.1em;text-transform:uppercase;font-weight:600;}
+.orders-table td{padding:.75rem 1rem;border-bottom:1px solid #f5f5f5;}
+.orders-table tr:hover td{background:#fafafa;}
+
+/* ===== MI CUENTA ===== */
+.cuenta-grid{display:grid;grid-template-columns:1fr 2fr;gap:2rem;max-width:900px;margin:0 auto;}
+.perfil-card{background:#fff;border-radius:10px;padding:1.5rem;box-shadow:0 2px 12px var(--sombra);height:fit-content;border:1px solid var(--borde);}
+.perfil-avatar{width:54px;height:54px;border-radius:50%;background:var(--terra);color:#fff;display:flex;align-items:center;justify-content:center;font-family:'Playfair Display',serif;font-size:1.4rem;font-weight:700;margin:0 auto 1rem;}
+.tickets-table{width:100%;border-collapse:collapse;font-size:.76rem;font-family:'Josefin Sans',sans-serif;}
+.tickets-table th{background:var(--marino);color:#fff;padding:.68rem .9rem;text-align:left;font-size:.63rem;letter-spacing:.1em;text-transform:uppercase;font-weight:600;}
+.tickets-table td{padding:.68rem .9rem;border-bottom:1px solid #f5f5f5;}
+
+/* ===== ADD MOVIE ===== */
+.add-movie-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem;}
+.add-movie-grid .full{grid-column:1/-1;}
+
+/* ===== SEAT MAP ===== */
+.screen{background:linear-gradient(to bottom,var(--rojo),var(--rojo-osc));color:#fff;text-align:center;padding:.48rem;font-family:'Josefin Sans',sans-serif;font-size:.66rem;letter-spacing:.3em;text-transform:uppercase;border-radius:4px 4px 22px 22px;margin-bottom:1.8rem;font-weight:600;}
+.seat-grid{display:flex;flex-direction:column;gap:5px;margin-bottom:1.4rem;overflow-x:auto;}
+.seat-row{display:flex;align-items:center;gap:3px;min-width:fit-content;}
+.row-label{width:16px;font-family:'Josefin Sans',sans-serif;font-size:.62rem;color:var(--suave);font-weight:600;text-align:center;flex-shrink:0;}
+.seat{width:27px;height:25px;border-radius:5px 5px 3px 3px;cursor:pointer;border:2px solid transparent;font-family:'Josefin Sans',sans-serif;font-size:.52rem;font-weight:700;display:flex;align-items:center;justify-content:center;transition:all .15s;flex-shrink:0;}
+.seat.libre{background:#d1fae5;border-color:#34d399;color:#065f46;}
+.seat.libre:hover{background:#34d399;color:#fff;transform:scale(1.1);}
+.seat.vendido{background:#fee2e2;border-color:#f87171;color:#7f1d1d;cursor:not-allowed;}
+.seat.reservado{background:#fef3c7;border-color:#fbbf24;color:#78350f;}
+.seat.vip{background:rgba(201,106,80,.15);border-color:var(--terra);color:var(--terra-osc);}
+.seat.vip.libre:hover{background:var(--terra);color:#fff;}
+.seat.pareja{width:58px;background:rgba(28,51,80,.07);border-color:var(--marino);color:var(--marino);}
+.seat.selected{background:var(--terra)!important;border-color:var(--terra-osc)!important;color:#fff!important;transform:scale(1.08);}
+.aisle{width:13px;flex-shrink:0;}
+.seat-legend{display:flex;flex-wrap:wrap;gap:.9rem;margin-bottom:1.4rem;}
+.legend-item{display:flex;align-items:center;gap:4px;font-size:.68rem;font-family:'Josefin Sans',sans-serif;color:var(--suave);letter-spacing:.03em;}
+.legend-box{width:13px;height:12px;border-radius:3px;border:2px solid transparent;flex-shrink:0;}
+.funciones-pills{display:flex;flex-wrap:wrap;gap:.45rem;margin-bottom:1.4rem;}
+.funcion-pill{padding:.32rem .85rem;border-radius:20px;font-family:'Josefin Sans',sans-serif;font-size:.72rem;letter-spacing:.07em;cursor:pointer;border:1.5px solid #ddd;color:var(--suave);transition:all .15s;}
+.funcion-pill.active{border-color:var(--rojo);background:var(--rojo);color:#fff;}
+.capacity-bar{display:flex;gap:1.1rem;margin-bottom:1.4rem;background:var(--rosa);padding:.75rem 1.1rem;border-radius:7px;}
+.cap-item{text-align:center;}
+.cap-num{font-family:'Playfair Display',serif;font-size:1.25rem;font-weight:700;}
+.cap-lbl{font-family:'Josefin Sans',sans-serif;font-size:.6rem;letter-spacing:.08em;color:var(--suave);text-transform:uppercase;}
+.cap-libre{color:#22c55e;}.cap-reservado{color:#f59e0b;}.cap-vendido{color:#ef4444;}
+
+/* ===== CARRITO ===== */
+.carrito{border-top:2px solid var(--rosa);padding-top:1.1rem;margin-top:.9rem;}
+.carrito h3{font-family:'Playfair Display',serif;font-size:1.1rem;margin-bottom:.75rem;color:var(--marino);}
+.carrito-items{display:flex;flex-direction:column;gap:.38rem;margin-bottom:.9rem;min-height:38px;}
+.carrito-item{display:flex;justify-content:space-between;align-items:center;font-size:.76rem;padding:.42rem .85rem;background:var(--rosa);border-radius:5px;font-family:'Josefin Sans',sans-serif;letter-spacing:.02em;}
+.carrito-total{font-family:'Playfair Display',serif;font-size:1.1rem;font-weight:700;color:var(--rojo);text-align:right;margin-bottom:.9rem;}
+.carrito-btns{display:flex;gap:.65rem;}
+.btn-reservar{flex:1;padding:.65rem;background:var(--terra);color:#fff;border:none;border-radius:5px;font-family:'Josefin Sans',sans-serif;font-size:.72rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;cursor:pointer;transition:all .2s;}
+.btn-reservar:hover{background:var(--terra-osc);}
+.btn-comprar-emp{flex:1;padding:.65rem;background:#22c55e;color:#fff;border:none;border-radius:5px;font-family:'Josefin Sans',sans-serif;font-size:.72rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;cursor:pointer;transition:all .2s;}
+.btn-comprar-emp:hover{background:#16a34a;}
+
+/* ===== MODALES ===== */
+.modal-overlay{position:fixed;inset:0;z-index:500;background:rgba(13,31,50,.75);backdrop-filter:blur(6px);display:none;align-items:center;justify-content:center;padding:1rem;}
+.modal-overlay.open{display:flex;}
+.modal{background:#fff;border-radius:12px;max-width:700px;width:100%;max-height:92vh;overflow:hidden;display:flex;flex-direction:column;box-shadow:0 36px 90px rgba(0,0,0,.35);}
+.modal-header{background:var(--marino);color:#fff;padding:1.15rem 1.5rem;display:flex;justify-content:space-between;align-items:flex-start;}
+.modal-header h2{font-family:'Playfair Display',serif;font-size:1.3rem;font-weight:700;}
+.modal-header-sub{font-family:'Josefin Sans',sans-serif;font-weight:300;font-size:.7rem;letter-spacing:.06em;opacity:.62;margin-top:3px;}
+.modal-close{background:transparent;border:none;color:rgba(255,255,255,.65);font-size:1.2rem;cursor:pointer;transition:color .2s;line-height:1;padding:2px;flex-shrink:0;font-family:'Josefin Sans',sans-serif;}
+.modal-close:hover{color:#fff;}
+.modal-body{padding:1.5rem;overflow-y:auto;flex:1;}
+
+/* ===== PAGO ===== */
+.pay-tabs{display:flex;gap:0;margin-bottom:1.4rem;border-radius:7px;overflow:hidden;border:1.5px solid #e2d9d6;}
+.pay-tab{flex:1;padding:.7rem;text-align:center;cursor:pointer;font-family:'Josefin Sans',sans-serif;font-size:.74rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;transition:all .2s;background:#fff;color:var(--suave);border:none;}
+.pay-tab.active{background:var(--marino);color:#fff;}
+.pay-panel{display:none;}.pay-panel.active{display:block;}
+.card-visual{background:linear-gradient(135deg,var(--marino) 0%,#2a4a6b 60%,var(--terra-osc) 100%);border-radius:13px;padding:1.35rem 1.55rem;color:#fff;margin-bottom:1.4rem;position:relative;overflow:hidden;min-height:152px;}
+.card-visual::before{content:'';position:absolute;top:-40px;right:-40px;width:155px;height:155px;border-radius:50%;background:rgba(255,255,255,.05);}
+.card-chip{width:38px;height:27px;background:linear-gradient(135deg,#e8c84a,#c9972a);border-radius:4px;margin-bottom:1.1rem;}
+.card-number-display{font-family:'Josefin Sans',sans-serif;font-size:1.15rem;letter-spacing:.22em;font-weight:300;margin-bottom:.95rem;}
+.card-bottom{display:flex;justify-content:space-between;align-items:flex-end;}
+.card-label{font-family:'Josefin Sans',sans-serif;font-size:.58rem;opacity:.52;letter-spacing:.12em;text-transform:uppercase;margin-bottom:2px;}
+.card-value{font-family:'Josefin Sans',sans-serif;font-size:.82rem;font-weight:500;letter-spacing:.06em;}
+.card-brand{position:absolute;top:1.1rem;right:1.35rem;font-family:'Josefin Sans',sans-serif;font-size:.72rem;letter-spacing:.1em;font-weight:700;opacity:.88;}
+.input-field{width:100%;padding:.68rem 1rem;border:1.5px solid #e2d9d6;border-radius:6px;font-family:'Josefin Sans',sans-serif;font-size:.84rem;outline:none;color:var(--texto);transition:border-color .2s;}
+.input-field:focus{border-color:var(--terra);}
+.input-label{display:block;font-family:'Josefin Sans',sans-serif;font-size:.63rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--suave);margin-bottom:.33rem;}
+.pay-total-bar{background:var(--rosa);border-radius:8px;padding:.95rem 1.1rem;margin-bottom:1.4rem;display:flex;justify-content:space-between;align-items:center;}
+.pay-total-bar .total-num{font-family:'Playfair Display',serif;font-size:1.8rem;font-weight:700;color:var(--rojo);}
+.btn-pay{width:100%;padding:.88rem;background:var(--rojo);color:#fff;border:none;border-radius:8px;font-family:'Josefin Sans',sans-serif;font-size:.8rem;font-weight:700;letter-spacing:.15em;text-transform:uppercase;cursor:pointer;transition:all .2s;display:flex;align-items:center;justify-content:center;gap:.5rem;}
+.btn-pay:hover{background:var(--rojo-osc);transform:translateY(-1px);}
+.btn-pay:disabled{background:#ccc;cursor:not-allowed;transform:none;}
+.transfer-card{background:var(--rosa);border-radius:9px;padding:1rem 1.2rem;margin-bottom:.85rem;}
+.transfer-row{display:flex;justify-content:space-between;padding:.42rem 0;border-bottom:1px solid rgba(0,0,0,.05);font-family:'Josefin Sans',sans-serif;font-size:.78rem;}
+.transfer-row:last-child{border-bottom:none;}
+.t-label{color:var(--suave);font-weight:300;}.t-value{font-weight:700;color:var(--marino);}
+.copy-btn{padding:1px 7px;background:var(--marino);color:#fff;border:none;border-radius:3px;font-family:'Josefin Sans',sans-serif;font-size:.62rem;cursor:pointer;margin-left:5px;letter-spacing:.04em;}
+.transfer-ref{background:var(--marino);color:#fff;border-radius:8px;padding:.95rem 1.1rem;text-align:center;margin-bottom:.9rem;}
+.ref-num{font-family:'Playfair Display',serif;font-size:1.4rem;font-weight:700;letter-spacing:.15em;color:var(--terra);}
+.upload-area{border:2px dashed #c8bbb7;border-radius:8px;padding:1.3rem;text-align:center;cursor:pointer;transition:all .2s;margin-bottom:.9rem;}
+.upload-area:hover{border-color:var(--terra);background:rgba(201,106,80,.03);}
+.upload-area input{display:none;}
+/* Success */
+.success-screen{text-align:center;padding:1.8rem .8rem;}
+.success-icon{width:66px;height:66px;background:#d1fae5;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 1.1rem;}
+.success-icon svg{width:30px;height:30px;stroke:#065f46;stroke-width:2.5;}
+.ticket-preview{background:#fff;border:1.5px solid #e2d9d6;border-radius:9px;padding:1.1rem;margin:1.3rem 0;text-align:left;}
+.tp-row{display:flex;justify-content:space-between;padding:.38rem 0;font-family:'Josefin Sans',sans-serif;font-size:.76rem;border-bottom:1px dashed #eee;}
+.tp-row:last-child{border-bottom:none;}
+
+/* ===== GLOBAL CART DRAWER ===== */
+.cart-drawer{position:fixed;top:0;right:0;bottom:0;width:380px;background:#fff;box-shadow:-10px 0 50px rgba(0,0,0,.18);z-index:600;transform:translateX(100%);transition:transform .35s cubic-bezier(.4,0,.2,1);display:flex;flex-direction:column;}
+.cart-drawer.open{transform:translateX(0);}
+.cart-drawer-header{background:var(--marino);padding:1.2rem 1.5rem;display:flex;justify-content:space-between;align-items:center;}
+.cart-drawer-header h2{font-family:'Playfair Display',serif;font-size:1.3rem;color:#fff;font-weight:700;}
+.cart-close{background:transparent;border:none;color:rgba(255,255,255,.65);font-size:1.2rem;cursor:pointer;font-family:'Josefin Sans',sans-serif;}
+.cart-close:hover{color:#fff;}
+.cart-body{flex:1;overflow-y:auto;padding:1.2rem;}
+.cart-section-title{font-family:'Josefin Sans',sans-serif;font-size:.62rem;letter-spacing:.18em;text-transform:uppercase;color:var(--suave);margin-bottom:.65rem;font-weight:700;}
+.cart-line{display:flex;justify-content:space-between;align-items:flex-start;padding:.6rem 0;border-bottom:1px solid #f5f5f5;font-family:'Josefin Sans',sans-serif;font-size:.8rem;}
+.cart-line:last-child{border-bottom:none;}
+.cart-line-name{color:var(--texto);flex:1;padding-right:.5rem;line-height:1.4;}
+.cart-line-price{color:var(--rojo);font-weight:700;font-family:'Playfair Display',serif;font-size:.9rem;flex-shrink:0;}
+.cart-remove{background:none;border:none;color:var(--suave);cursor:pointer;font-size:.7rem;margin-left:.4rem;transition:color .15s;font-family:'Josefin Sans',sans-serif;}
+.cart-remove:hover{color:var(--rojo);}
+.cart-footer{padding:1.2rem 1.5rem;border-top:1px solid #eee;}
+.cart-total-line{display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;}
+.cart-total-label{font-family:'Josefin Sans',sans-serif;font-size:.72rem;letter-spacing:.1em;text-transform:uppercase;color:var(--suave);}
+.cart-total-amount{font-family:'Playfair Display',serif;font-size:1.7rem;font-weight:700;color:var(--rojo);}
+.btn-checkout{width:100%;padding:.85rem;background:var(--rojo);color:#fff;border:none;border-radius:6px;font-family:'Josefin Sans',sans-serif;font-size:.78rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;cursor:pointer;transition:all .2s;}
+.btn-checkout:hover{background:var(--rojo-osc);}
+.cart-overlay{position:fixed;inset:0;z-index:590;background:rgba(13,31,50,.5);display:none;backdrop-filter:blur(3px);}
+.cart-overlay.open{display:block;}
+.cart-empty{text-align:center;padding:2rem 1rem;color:var(--suave);font-family:'Josefin Sans',sans-serif;font-size:.82rem;letter-spacing:.05em;}
+
+/* ===== COMIDA STEP en modal ===== */
+.comida-step-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:.9rem;margin-bottom:1.2rem;}
+.comida-step-card{background:var(--rosa);border-radius:8px;padding:.9rem .7rem;text-align:center;border:1.5px solid transparent;cursor:pointer;transition:all .2s;}
+.comida-step-card:hover{border-color:var(--terra);}
+.comida-step-card.selected{border-color:var(--terra);background:rgba(201,106,80,.08);}
+.comida-step-card .c-name{font-family:'Playfair Display',serif;font-size:.88rem;font-weight:700;color:var(--marino);margin:.5rem 0 .2rem;}
+.comida-step-card .c-price{font-family:'Playfair Display',serif;font-size:.95rem;font-weight:700;color:var(--rojo);}
+.comida-step-card .c-qty-row{display:flex;align-items:center;justify-content:center;gap:.45rem;margin-top:.55rem;}
+
+/* ===== TOAST ===== */
+.toast-container{position:fixed;bottom:2rem;left:50%;transform:translateX(-50%);z-index:1000;display:flex;flex-direction:column;gap:.45rem;align-items:center;pointer-events:none;}
+.toast{padding:.7rem 1.3rem;border-radius:30px;font-family:'Josefin Sans',sans-serif;font-size:.76rem;letter-spacing:.06em;color:#fff;font-weight:700;animation:toastIn .3s ease;pointer-events:auto;text-align:center;}
+.toast.info{background:var(--marino);}.toast.success{background:#22c55e;}.toast.warning{background:#f59e0b;}.toast.error{background:#ef4444;}
+
+/* ===== SPOTY ===== */
+.chat-fab{position:fixed;bottom:2rem;right:2rem;z-index:250;width:56px;height:56px;border-radius:50%;background:var(--marino-deep);color:#fff;border:2px solid var(--terra);cursor:pointer;box-shadow:0 6px 22px rgba(13,31,50,.45);transition:all .3s;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:2px;}
+.chat-fab:hover{transform:scale(1.06);}
+.chat-fab-lbl{font-family:'Josefin Sans',sans-serif;font-size:.42rem;letter-spacing:.12em;text-transform:uppercase;color:var(--terra);}
+.chat-panel{position:fixed;bottom:5.2rem;right:2rem;z-index:250;width:345px;background:#fff;border-radius:13px;box-shadow:0 22px 65px rgba(0,0,0,.2);display:none;flex-direction:column;max-height:505px;overflow:hidden;border:1px solid var(--borde);}
+.chat-panel.open{display:flex;}
+.chat-header{background:var(--marino-deep);padding:.9rem 1.1rem;color:#fff;border-radius:13px 13px 0 0;display:flex;justify-content:space-between;align-items:center;}
+.chat-header-left{display:flex;align-items:center;gap:9px;}
+.spoty-avatar{width:32px;height:32px;background:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.chat-title-name{font-family:'Playfair Display',serif;font-size:.95rem;line-height:1;}
+.chat-title-sub{font-family:'Josefin Sans',sans-serif;font-weight:300;font-size:.58rem;letter-spacing:.1em;color:rgba(255,255,255,.45);margin-top:2px;}
+.chat-messages{flex:1;overflow-y:auto;padding:.9rem;display:flex;flex-direction:column;gap:.65rem;max-height:300px;}
+.msg{padding:.62rem .95rem;border-radius:11px;font-size:.8rem;line-height:1.55;max-width:87%;font-family:'Josefin Sans',sans-serif;font-weight:300;letter-spacing:.02em;}
+.msg.bot{background:var(--rosa);color:var(--texto);align-self:flex-start;border-radius:4px 11px 11px 11px;}
+.msg.user{background:var(--marino);color:#fff;align-self:flex-end;border-radius:11px 4px 11px 11px;}
+.msg.typing{background:var(--rosa);align-self:flex-start;padding:.9rem;}
+.dot-anim{display:flex;gap:4px;}.dot-anim span{width:6px;height:6px;border-radius:50%;background:var(--terra);animation:bounce 1.2s ease-in-out infinite;}
+.dot-anim span:nth-child(2){animation-delay:.2s;}.dot-anim span:nth-child(3){animation-delay:.4s;}
+.chat-input-area{padding:.75rem;border-top:1px solid #f0f0f0;display:flex;gap:.45rem;}
+.chat-input-area input{flex:1;padding:.58rem .95rem;border:1px solid #e0d8d5;border-radius:20px;font-size:.78rem;outline:none;font-family:'Josefin Sans',sans-serif;background:var(--rosa);}
+.chat-input-area input:focus{border-color:var(--terra);}
+.chat-send{padding:.58rem .95rem;background:var(--rojo);color:#fff;border:none;border-radius:20px;cursor:pointer;font-size:.72rem;font-weight:700;font-family:'Josefin Sans',sans-serif;letter-spacing:.06em;}
+
+/* ===== ANIMACIONES ===== */
+@keyframes fadeUp{from{opacity:0;transform:translateY(22px);}to{opacity:1;transform:none;}}
+@keyframes filmScroll{from{transform:translateX(0);}to{transform:translateX(-50%);}}
+@keyframes twinkle{0%,100%{opacity:.18;}50%{opacity:.85;}}
+@keyframes bounce{0%,80%,100%{transform:scale(0);}40%{transform:scale(1);}}
+@keyframes toastIn{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:none;}}
+
+/* ===== RESPONSIVE ===== */
+@media(max-width:900px){.footer-grid{grid-template-columns:1fr 1fr;}.emp-left{display:none;}.cuenta-grid{grid-template-columns:1fr;}}
+@media(max-width:600px){nav#main-nav{padding:0 1rem;}.loc-panel{min-width:300px;right:-60px;}.chat-panel{width:calc(100vw - 2rem);right:1rem;}.cart-drawer{width:100%;}}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav id="main-nav">
+  <div class="nav-logo" onclick="showView('home')">
+    <svg class="logo-svg" viewBox="0 0 34 34" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="17" cy="17" r="16" stroke="#C96A50" stroke-width="1.4"/>
+      <path d="M9 12.5 L17 9 L25 12.5 L25 23.5 L17 27 L9 23.5 Z" stroke="#C96A50" stroke-width="1.1" fill="none"/>
+      <circle cx="17" cy="17" r="3.5" fill="#C96A50" opacity=".75"/>
+      <line x1="9" y1="12.5" x2="17" y2="17" stroke="#C96A50" stroke-width=".7" opacity=".5"/>
+      <line x1="25" y1="12.5" x2="17" y2="17" stroke="#C96A50" stroke-width=".7" opacity=".5"/>
+      <line x1="9" y1="23.5" x2="17" y2="17" stroke="#C96A50" stroke-width=".7" opacity=".5"/>
+      <line x1="25" y1="23.5" x2="17" y2="17" stroke="#C96A50" stroke-width=".7" opacity=".5"/>
+    </svg>
+    <div>
+      <span class="logo-name">MOVIORA<span class="logo-dot">.</span></span>
+      <span class="logo-sub">Cines</span>
+    </div>
+  </div>
+  <div class="nav-links">
+    <button class="nav-link" onclick="showView('home');scrollToSection('cartelera')">Cartelera</button>
+    <button class="nav-link" onclick="showView('home');scrollToSection('comida')">Comida</button>
+    <button class="nav-link" onclick="showView('home');scrollToSection('precios')">Precios</button>
+    <!-- Locations -->
+    <div class="loc-wrap" id="loc-wrap">
+      <button class="loc-btn" id="loc-btn" onclick="toggleLocations(event)">
+        Sucursales
+        <svg width="10" height="10" viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.8"><polyline points="2,3 5,7 8,3"/></svg>
+      </button>
+      <div class="loc-panel" id="loc-panel">
+        <div class="loc-ph"><p>Nuestras Sucursales</p></div>
+        <div class="loc-grid">
+          <div class="loc-col">
+            <div class="loc-col-title">Republica Dominicana</div>
+            <div class="loc-item" onclick="selectLoc('Santo Domingo, RD')"><div class="loc-dot"></div><div><div class="loc-city">Santo Domingo</div></div></div>
+            <div class="loc-item" onclick="selectLoc('Santiago, RD')"><div class="loc-dot"></div><div><div class="loc-city">Santiago</div></div></div>
+            <div class="loc-item" onclick="selectLoc('San Juan, RD')"><div class="loc-dot"></div><div><div class="loc-city">San Juan</div></div></div>
+            <div class="loc-item" onclick="selectLoc('Punta Cana, RD')"><div class="loc-dot"></div><div><div class="loc-city">Punta Cana</div></div></div>
+            <div class="loc-item" onclick="selectLoc('Azua, RD')"><div class="loc-dot"></div><div><div class="loc-city">Azua</div></div></div>
+            <div class="loc-item" onclick="selectLoc('Bahoruco, RD')"><div class="loc-dot"></div><div><div class="loc-city">Bahoruco</div></div></div>
+            <div class="loc-item" onclick="selectLoc('Elias Pina, RD')"><div class="loc-dot"></div><div><div class="loc-city">Elias Pina</div></div></div>
+          </div>
+          <div class="loc-col">
+            <div class="loc-col-title">Americas</div>
+            <div class="loc-item" onclick="selectLoc('San Juan, Puerto Rico')"><div class="loc-dot"></div><div><div class="loc-city">San Juan</div><div class="loc-country">Puerto Rico</div></div></div>
+            <div class="loc-item" onclick="selectLoc('Bayamon, Puerto Rico')"><div class="loc-dot"></div><div><div class="loc-city">Bayamon</div><div class="loc-country">Puerto Rico</div></div></div>
+            <div class="loc-item" onclick="selectLoc('Puerto Principe, Haiti')"><div class="loc-dot"></div><div><div class="loc-city">Puerto Principe</div><div class="loc-country">Haiti</div></div></div>
+          </div>
+          <div class="loc-col">
+            <div class="loc-col-title">Internacional</div>
+            <div class="loc-item" onclick="selectLoc('Londres, Reino Unido')"><div class="loc-dot"></div><div><div class="loc-city">Londres</div><div class="loc-country">Reino Unido</div></div></div>
+            <div class="loc-item" onclick="selectLoc('Seoul, Corea del Sur')"><div class="loc-dot"></div><div><div class="loc-city">Seoul</div><div class="loc-country">Corea del Sur</div></div></div>
+            <div class="loc-item" onclick="selectLoc('Nueva Delhi, India')"><div class="loc-dot"></div><div><div class="loc-city">Nueva Delhi</div><div class="loc-country">India</div></div></div>
+            <div class="loc-item" onclick="selectLoc('Dubai, Emiratos Arabes')"><div class="loc-dot"></div><div><div class="loc-city">Dubai</div><div class="loc-country">Emiratos Arabes</div></div></div>
+            <div class="loc-item" onclick="selectLoc('Johannesburgo, Sudafrica')"><div class="loc-dot"></div><div><div class="loc-city">Johannesburgo</div><div class="loc-country">Sudafrica</div></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="nav-div"></div>
+    <!-- Carrito icon -->
+    <button class="cart-icon-btn" onclick="openCartDrawer()" title="Ver carrito">
+      <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
+      <div class="cart-badge" id="cart-badge">0</div>
+    </button>
+    <!-- Portal empleados -->
+    <button class="btn-emp" onclick="showView('emp-login')">Portal Empleados</button>
+    <!-- Guest -->
+    <div id="nav-guest" style="display:flex;gap:.5rem;">
+      <button class="btn-nav btn-outline" onclick="showView('registro')">Registrarse</button>
+      <button class="btn-nav btn-solid" onclick="showView('login')">Iniciar Sesion</button>
+    </div>
+    <!-- Logged in -->
+    <div id="nav-user" style="display:none;">
+      <div class="nav-avatar" id="nav-avatar-btn">
+        <span id="nav-initials">?</span>
+        <div class="nav-dropdown">
+          <a onclick="openCartDrawer()">Mi Carrito</a>
+          <a onclick="showView('cuenta')">Mi Cuenta</a>
+          <a onclick="logout()">Cerrar Sesion</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<!-- CART OVERLAY + DRAWER -->
+<div class="cart-overlay" id="cart-overlay" onclick="closeCartDrawer()"></div>
+<div class="cart-drawer" id="cart-drawer">
+  <div class="cart-drawer-header">
+    <h2>Mi Carrito</h2>
+    <button class="cart-close" onclick="closeCartDrawer()">x</button>
+  </div>
+  <div class="cart-body" id="cart-drawer-body">
+    <div class="cart-empty">Tu carrito esta vacio.</div>
+  </div>
+  <div class="cart-footer">
+    <div class="cart-total-line">
+      <span class="cart-total-label">Total</span>
+      <span class="cart-total-amount" id="cart-drawer-total">RD$ 0</span>
+    </div>
+    <button class="btn-checkout" onclick="openPaymentFromCart()">Pagar Ahora</button>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast-container" id="toast-container"></div>
+
+<!-- ============================================================ VIEW: HOME -->
+<div id="view-home" class="view active">
+<section class="hero">
+  <div class="stars-bg" id="stars-bg"></div>
+  <div class="hero-orb1"></div><div class="hero-orb2"></div>
+  <div class="hero-welcome" id="hero-welcome">La experiencia cinematografica redefinida</div>
+  <div class="hero-logo" id="hero-main-logo">MOVIORA</div>
+  <div class="hero-cines">C &nbsp; I &nbsp; N &nbsp; E &nbsp; S</div>
+  <div class="hero-tagline" id="hero-tagline">Donde cada pelicula se convierte en un recuerdo.</div>
+  <div class="hero-line"></div>
+  <div class="hero-btns" id="hero-btns">
+    <button class="btn-hero btn-primary" onclick="scrollToSection('cartelera')">Ver Cartelera</button>
+    <button class="btn-hero btn-secondary" onclick="showView('login')">Iniciar Sesion</button>
+  </div>
+  <!-- Panel para usuarios logueados -->
+  <div class="hero-user-panel" id="hero-user-panel">
+    <div class="hero-nav-card" onclick="scrollToSection('cartelera')">
+      <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="var(--terra)" stroke-width="1.8"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+      <span>Cartelera</span>
+    </div>
+    <div class="hero-nav-card" onclick="scrollToSection('comida')">
+      <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="var(--terra)" stroke-width="1.8"><path d="M18 8h1a4 4 0 0 1 0 8h-1"/><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"/><line x1="6" y1="1" x2="6" y2="4"/><line x1="10" y1="1" x2="10" y2="4"/><line x1="14" y1="1" x2="14" y2="4"/></svg>
+      <span>Comida</span>
+    </div>
+    <div class="hero-nav-card" onclick="openCartDrawer()">
+      <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="var(--terra)" stroke-width="1.8"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
+      <span>Mi Carrito</span>
+    </div>
+    <div class="hero-nav-card" onclick="showView('cuenta')">
+      <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="var(--terra)" stroke-width="1.8"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+      <span>Mi Cuenta</span>
+    </div>
+  </div>
+  <div class="film-strip"><div class="film-strip-inner" id="film-strip"></div></div>
+</section>
+
+<!-- CARTELERA -->
+<section class="section cartelera-bg" id="cartelera">
+  <div class="container">
+    <div class="eyebrow">En Pantalla</div>
+    <div class="section-title">Cartelera Esta Semana</div>
+    <div class="section-sub">Selecciona tu pelicula y elige el horario perfecto</div>
+    <div class="movies-grid" id="movies-grid"></div>
+  </div>
+</section>
+
+<!-- COMIDA -->
+<section class="section comida-bg" id="comida">
+  <div class="container">
+    <div class="eyebrow">Snack Bar</div>
+    <div class="section-title">Antoja Algo</div>
+    <div class="section-sub">Agrega tus snacks favoritos al carrito y los recibiras en tu butaca</div>
+    <div class="comida-grid" id="comida-grid"></div>
+    <div style="text-align:center;margin-top:2rem;">
+      <button class="btn-hero btn-primary" onclick="openCartDrawer()">Ver Carrito y Pagar</button>
+    </div>
+  </div>
+</section>
+
+<!-- PRECIOS -->
+<section class="section precios-bg" id="precios">
+  <div class="container">
+    <div class="eyebrow">Tarifas</div>
+    <div class="section-title">Precios para Todos</div>
+    <div class="section-sub">Cada sala, una experiencia diferente</div>
+    <div class="precios-grid">
+      <div class="precio-card">
+        <div class="precio-icon-w"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg></div>
+        <div class="precio-sala">Sala 1</div><div class="precio-tipo">Estandar</div>
+        <div class="precio-monto"><span>RD$ </span>280</div>
+      </div>
+      <div class="precio-card">
+        <div class="precio-icon-w"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M3 18v-6a9 9 0 0 1 18 0v6"/><path d="M21 19a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3z"/><path d="M3 19a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2H3z"/></svg></div>
+        <div class="precio-sala">Sala 2</div><div class="precio-tipo">Estandar VIP</div>
+        <div class="precio-monto"><span>RD$ </span>420</div>
+      </div>
+      <div class="precio-card" style="border:2px solid var(--terra);">
+        <div class="precio-icon-w"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></div>
+        <div class="precio-sala">Sala 2</div><div class="precio-tipo">Butaca VIP</div>
+        <div class="precio-monto"><span>RD$ </span>650</div>
+      </div>
+      <div class="precio-card">
+        <div class="precio-icon-w"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg></div>
+        <div class="precio-sala">Sala 2</div><div class="precio-tipo">Asiento Pareja</div>
+        <div class="precio-monto"><span>RD$ </span>1,100</div>
+      </div>
+      <div class="precio-card" style="border:2px solid var(--rojo);">
+        <div class="precio-icon-w"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M8.56 2.75c4.37 6.03 6.02 9.42 8.03 17.72m2.54-15.38c-3.72 4.35-8.94 5.66-16.88 5.85m19.5 1.9c-3.5-.93-6.63-.82-8.94 0-2.58.92-5.01 2.86-7.44 6.32"/></svg></div>
+        <div class="precio-sala">Sala 3</div><div class="precio-tipo">4DX</div>
+        <div class="precio-monto"><span>RD$ </span>550</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <div class="footer-logo-n">MOVIORA<span style="color:var(--terra);">.</span></div>
+        <div class="footer-logo-s">Cines</div>
+        <p>La experiencia cinematografica redefinida. Donde cada pelicula se convierte en un recuerdo.</p>
+        <p style="margin-top:.7rem;">info@moviora.com &nbsp;|&nbsp; (809) 555-0100</p>
+        <p>Santo Domingo, Republica Dominicana</p>
+      </div>
+      <div class="footer-col">
+        <h4>Navegacion</h4>
+        <a onclick="scrollToSection('cartelera')">Cartelera</a>
+        <a onclick="scrollToSection('comida')">Comida</a>
+        <a onclick="scrollToSection('precios')">Precios</a>
+      </div>
+      <div class="footer-col">
+        <h4>Clientes</h4>
+        <a onclick="showView('registro')">Crear Cuenta</a>
+        <a onclick="showView('login')">Iniciar Sesion</a>
+        <a onclick="showView('cuenta')">Mi Cuenta</a>
+      </div>
+      <div class="footer-col">
+        <h4>Sistema</h4>
+        <a onclick="showView('emp-login')">Portal Empleados</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>2026 Moviora Cines. Todos los derechos reservados.</span>
+      <span>Santo Domingo, Republica Dominicana</span>
+    </div>
+  </div>
+</footer>
+</div>
+
+<!-- ============================================================ VIEW: REGISTRO -->
+<div id="view-registro" class="view">
+<div class="auth-bg">
+  <div class="auth-card">
+    <div class="auth-logo-n">MOVIORA<span style="color:var(--terra);">.</span></div>
+    <div class="auth-logo-s">Cines</div>
+    <div class="auth-div">Crear Cuenta</div>
+    <div class="form-row">
+      <div class="form-group half"><label>Nombre</label><input type="text" id="reg-nombre" placeholder="Carlos" oninput="validateField(this,'text')"></div>
+      <div class="form-group half"><label>Apellido</label><input type="text" id="reg-apellido" placeholder="Mendez" oninput="validateField(this,'text')"></div>
+    </div>
+    <div class="form-group"><label>Correo Electronico</label><input type="email" id="reg-correo" placeholder="correo@email.com" onblur="checkEmailExists(this)" oninput="validateField(this,'email')">
+      <div id="correo-msg" style="font-size:.7rem;margin-top:4px;font-family:'Josefin Sans',sans-serif;"></div>
+    </div>
+    <div class="form-group"><label>Contrasena</label><input type="password" id="reg-pass" placeholder="Minimo 8 caracteres" oninput="checkPasswordStrength(this)">
+      <div class="strength-bar" id="strength-bar"></div>
+      <div id="strength-text" style="font-size:.68rem;margin-top:3px;color:var(--suave);font-family:'Josefin Sans',sans-serif;"></div>
+    </div>
+    <div class="form-group"><label>Confirmar Contrasena</label><input type="password" id="reg-confirm" placeholder="Repite tu contrasena" oninput="checkConfirm(this)"></div>
+    <div class="form-group" style="display:flex;align-items:center;gap:.6rem;">
+      <input type="checkbox" id="reg-terms" style="width:auto;">
+      <label for="reg-terms" style="font-size:.76rem;color:var(--suave);font-weight:300;letter-spacing:.02em;text-transform:none;">Acepto los terminos y condiciones</label>
+    </div>
+    <button class="btn-auth" onclick="registrar()">Crear Cuenta</button>
+    <div class="auth-link">Ya tienes cuenta? <a onclick="showView('login')">Iniciar sesion</a></div>
+  </div>
+</div>
+</div>
+
+<!-- ============================================================ VIEW: LOGIN -->
+<div id="view-login" class="view">
+<div class="auth-bg">
+  <div class="auth-card">
+    <div class="auth-logo-n">MOVIORA<span style="color:var(--terra);">.</span></div>
+    <div class="auth-logo-s">Cines</div>
+    <div class="auth-div">Iniciar Sesion</div>
+    <div class="form-group"><label>Correo Electronico</label><input type="email" id="login-correo" placeholder="correo@email.com"></div>
+    <div class="form-group"><label>Contrasena</label><input type="password" id="login-pass" placeholder="Tu contrasena" onkeydown="if(event.key==='Enter')loginCliente()"></div>
+    <div style="display:flex;align-items:center;gap:.6rem;margin-bottom:.8rem;">
+      <input type="checkbox" id="login-remember" style="width:auto;">
+      <label for="login-remember" style="font-size:.76rem;color:var(--suave);font-weight:300;text-transform:none;font-family:'Josefin Sans',sans-serif;">Recordarme</label>
+    </div>
+    <div class="error-box" id="login-error">Correo o contrasena incorrectos.</div>
+    <button class="btn-auth" onclick="loginCliente()">Iniciar Sesion</button>
+    <div class="auth-link">No tienes cuenta? <a onclick="showView('registro')">Registrate</a></div>
+  </div>
+</div>
+</div>
+
+<!-- ============================================================ VIEW: MI CUENTA -->
+<div id="view-cuenta" class="view">
+<div style="padding-top:90px;min-height:100vh;background:var(--rosa);padding:90px 2rem 2rem;">
+  <div class="container">
+    <div style="margin-bottom:2rem;"><div class="eyebrow">Perfil</div><div class="section-title">Mi Cuenta</div></div>
+    <div class="cuenta-grid">
+      <div class="perfil-card">
+        <div class="perfil-avatar" id="cuenta-avatar">?</div>
+        <h3 style="text-align:center;font-family:'Playfair Display',serif;font-size:1.15rem;margin-bottom:.3rem;" id="cuenta-nombre">—</h3>
+        <p style="text-align:center;font-size:.73rem;color:var(--suave);font-family:'Josefin Sans',sans-serif;" id="cuenta-correo">—</p>
+        <div style="border-top:1px solid #eee;margin-top:1rem;padding-top:1rem;">
+          <div style="font-size:.65rem;letter-spacing:.08em;text-transform:uppercase;color:var(--suave);margin-bottom:.3rem;font-family:'Josefin Sans',sans-serif;">Miembro desde</div>
+          <div style="font-size:.8rem;font-family:'Josefin Sans',sans-serif;" id="cuenta-fecha">—</div>
+        </div>
+        <button class="btn-auth" style="margin-top:1.4rem;" onclick="logout()">Cerrar Sesion</button>
+      </div>
+      <div>
+        <div style="background:#fff;border-radius:10px;padding:1.5rem;box-shadow:0 2px 12px var(--sombra);border:1px solid var(--borde);">
+          <div style="font-family:'Playfair Display',serif;font-size:1.15rem;color:var(--marino);margin-bottom:1rem;">Mis Tickets</div>
+          <div style="overflow-x:auto;">
+            <table class="tickets-table">
+              <thead><tr><th>Pelicula</th><th>Asiento</th><th>Tipo</th><th>Precio</th><th>Funcion</th><th>Estado</th></tr></thead>
+              <tbody id="tickets-body"><tr><td colspan="6" style="text-align:center;padding:2rem;color:var(--suave);">No hay tickets aun.</td></tr></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- ============================================================ VIEW: EMP LOGIN -->
+<div id="view-emp-login" class="view">
+<div class="emp-login-bg">
+  <div class="emp-left">
+    <div style="margin-bottom:2.5rem;text-align:center;">
+      <svg width="54" height="54" viewBox="0 0 34 34" fill="none"><circle cx="17" cy="17" r="16" stroke="#C96A50" stroke-width="1.4"/><path d="M9 12.5 L17 9 L25 12.5 L25 23.5 L17 27 L9 23.5 Z" stroke="#C96A50" stroke-width="1.1" fill="none"/><circle cx="17" cy="17" r="3.5" fill="#C96A50" opacity=".75"/></svg>
+    </div>
+    <div class="emp-logo-big">MOVIORA<span style="color:var(--terra);">.</span></div>
+    <div style="font-family:'Josefin Sans',sans-serif;font-weight:100;font-size:.58rem;letter-spacing:.4em;color:rgba(255,255,255,.3);margin-top:4px;text-transform:uppercase;">Sistema Interno</div>
+    <div class="emp-tagline">Gestion cinematografica<br>de clase mundial.</div>
+    <div style="margin-top:2.5rem;width:100%;max-width:240px;overflow:hidden;">
+      <div class="film-strip" style="position:relative;bottom:auto;height:30px;border-radius:5px;"><div class="film-strip-inner" id="film-strip-2"></div></div>
+    </div>
+  </div>
+  <div class="emp-right">
+    <div class="emp-form-wrap">
+      <div class="emp-form-sub">Acceso Restringido</div>
+      <div class="emp-form-title">Portal de Empleados</div>
+      <div class="form-group"><label>ID de Empleado</label><input type="text" id="emp-id" placeholder="EMP-0001" onkeydown="if(event.key==='Enter')loginEmpleado()"></div>
+      <div class="form-group"><label>Correo Electronico</label><input type="email" id="emp-correo" placeholder="empleado@moviora.com" onkeydown="if(event.key==='Enter')loginEmpleado()"></div>
+      <div class="form-group"><label>Contrasena</label><input type="password" id="emp-pass" placeholder="Tu contrasena" onkeydown="if(event.key==='Enter')loginEmpleado()"></div>
+      <div class="error-box" id="emp-error">Credenciales incorrectas. Verifica tu ID, correo y contrasena.</div>
+      <div class="demo-quick">
+        <div class="demo-quick-title">Acceso rapido — Demo</div>
+        <button class="demo-btn" onclick="fillEmp('EMP-0001','carlos@moviora.com','admin123')"><strong>Carlos Mendez</strong> <span>— EMP-0001</span> <span class="demo-rol admin">Admin</span></button>
+        <button class="demo-btn" onclick="fillEmp('EMP-0002','laura@moviora.com','taquilla1')"><strong>Laura Jimenez</strong> <span>— EMP-0002</span> <span class="demo-rol taquilla">Taquilla</span></button>
+        <button class="demo-btn" onclick="fillEmp('EMP-0003','miguel@moviora.com','proy2024')"><strong>Miguel Torres</strong> <span>— EMP-0003</span> <span class="demo-rol proyeccion">Proyeccion</span></button>
+      </div>
+      <button class="btn-auth" onclick="loginEmpleado()">Acceder al Sistema</button>
+      <div style="margin-top:1.1rem;text-align:center;"><a onclick="showView('home')" style="color:var(--suave);font-family:'Josefin Sans',sans-serif;font-size:.72rem;cursor:pointer;letter-spacing:.07em;">Volver al sitio publico</a></div>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- ============================================================ VIEW: DASHBOARD -->
+<div id="view-dashboard" class="view">
+<div class="dashboard-bg">
+  <nav style="position:fixed;top:0;left:0;right:0;z-index:300;background:var(--marino-deep);height:70px;display:flex;align-items:center;justify-content:space-between;padding:0 2rem;border-bottom:1px solid rgba(201,106,80,.15);">
+    <div style="display:flex;align-items:center;gap:9px;">
+      <svg width="28" height="28" viewBox="0 0 34 34" fill="none"><circle cx="17" cy="17" r="16" stroke="#C96A50" stroke-width="1.4"/><path d="M9 12.5 L17 9 L25 12.5 L25 23.5 L17 27 L9 23.5 Z" stroke="#C96A50" stroke-width="1.1" fill="none"/><circle cx="17" cy="17" r="3.5" fill="#C96A50" opacity=".75"/></svg>
+      <span style="font-family:'Playfair Display',serif;font-weight:900;font-size:1.25rem;color:#fff;letter-spacing:.08em;">MOVIORA<span style="color:var(--terra);">.</span></span>
+    </div>
+    <div style="display:flex;align-items:center;gap:.9rem;">
+      <span style="font-family:'Josefin Sans',sans-serif;font-size:.78rem;color:rgba(255,255,255,.7);" id="dash-emp-name">—</span>
+      <span class="rol-badge" id="dash-rol-badge">—</span>
+      <button onclick="logoutEmpleado()" style="padding:.38rem .9rem;border:1px solid rgba(255,255,255,.22);background:transparent;color:rgba(255,255,255,.68);border-radius:3px;cursor:pointer;font-family:'Josefin Sans',sans-serif;font-size:.68rem;letter-spacing:.08em;text-transform:uppercase;transition:all .2s;" onmouseover="this.style.borderColor='var(--terra)'" onmouseout="this.style.borderColor='rgba(255,255,255,.22)'">Salir</button>
+    </div>
+  </nav>
+  <div class="dash-topnav" style="top:70px;position:fixed;z-index:200;">
+    <div class="dash-tab active" onclick="switchDashTab('cartelera',this)">Cartelera</div>
+    <div class="dash-tab" onclick="switchDashTab('salas',this)">Salas</div>
+    <div class="dash-tab" onclick="switchDashTab('pedidos',this)">Pedidos Clientes</div>
+    <div class="dash-tab hidden-tab" id="tab-empleados" onclick="switchDashTab('empleados',this)">Empleados</div>
+  </div>
+  <div style="padding-top:116px;">
+    <!-- Cartelera -->
+    <div id="dash-cartelera" class="dash-content">
+      <div class="stats-row" id="dash-stats"></div>
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.4rem;flex-wrap:wrap;gap:1rem;">
+        <div><div class="eyebrow">Peliculas</div><div style="font-family:'Playfair Display',serif;font-size:1.55rem;color:var(--marino);">Cartelera Activa</div></div>
+        <button onclick="openAddMovieModal()" style="padding:.58rem 1.3rem;background:var(--rojo);color:#fff;border:none;border-radius:4px;cursor:pointer;font-family:'Josefin Sans',sans-serif;font-size:.72rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;transition:all .2s;" onmouseover="this.style.background='var(--rojo-osc)'" onmouseout="this.style.background='var(--rojo)'">Agregar Pelicula</button>
+      </div>
+      <div class="dash-grid" id="dash-movies-grid"></div>
+    </div>
+    <!-- Salas -->
+    <div id="dash-salas" class="dash-content" style="display:none;">
+      <div class="eyebrow">Infraestructura</div>
+      <div style="font-family:'Playfair Display',serif;font-size:1.55rem;color:var(--marino);margin-bottom:1.4rem;">Gestion de Salas</div>
+      <div class="salas-grid" id="salas-grid"></div>
+    </div>
+    <!-- Pedidos -->
+    <div id="dash-pedidos" class="dash-content" style="display:none;">
+      <div class="eyebrow">Ventas</div>
+      <div style="font-family:'Playfair Display',serif;font-size:1.55rem;color:var(--marino);margin-bottom:1.4rem;">Pedidos de Clientes</div>
+      <div style="background:#fff;border-radius:9px;box-shadow:0 2px 12px var(--sombra);overflow:hidden;border:1px solid var(--borde);">
+        <table class="orders-table">
+          <thead><tr><th>Cliente</th><th>Pelicula / Item</th><th>Detalle</th><th>Precio</th><th>Tipo</th><th>Fecha</th></tr></thead>
+          <tbody id="orders-body"><tr><td colspan="6" style="text-align:center;padding:2rem;color:var(--suave);">No hay pedidos registrados.</td></tr></tbody>
+        </table>
+      </div>
+    </div>
+    <!-- Empleados -->
+    <div id="dash-empleados" class="dash-content" style="display:none;">
+      <div class="eyebrow">RRHH</div>
+      <div style="font-family:'Playfair Display',serif;font-size:1.55rem;color:var(--marino);margin-bottom:1.4rem;">Personal</div>
+      <div class="emp-table-wrap">
+        <table class="emp-table"><thead><tr><th>ID</th><th>Nombre</th><th>Correo</th><th>Rol</th><th>Estado</th><th>Turno</th></tr></thead>
+        <tbody id="emp-table-body"></tbody></table>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- ============================================================ MODALES -->
+<!-- Sala -->
+<div class="modal-overlay" id="modal-sala">
+  <div class="modal" style="max-width:760px;">
+    <div class="modal-header">
+      <div><h2 id="modal-movie-title">Pelicula</h2><div class="modal-header-sub" id="modal-movie-meta">—</div></div>
+      <button class="modal-close" onclick="closeModal('modal-sala')">x</button>
+    </div>
+    <div class="modal-body">
+      <div class="funciones-pills" id="funciones-pills"></div>
+      <div class="capacity-bar" id="capacity-bar"></div>
+      <div class="screen">Pantalla</div>
+      <div class="seat-legend">
+        <div class="legend-item"><div class="legend-box" style="background:#d1fae5;border-color:#34d399;"></div>Libre</div>
+        <div class="legend-item"><div class="legend-box" style="background:#fee2e2;border-color:#f87171;"></div>Vendido</div>
+        <div class="legend-item"><div class="legend-box" style="background:#fef3c7;border-color:#fbbf24;"></div>Reservado</div>
+        <div class="legend-item"><div class="legend-box" style="background:rgba(201,106,80,.2);border-color:var(--terra);"></div>VIP</div>
+        <div class="legend-item"><div class="legend-box" style="background:rgba(28,51,80,.08);border-color:var(--marino);"></div>Pareja</div>
+      </div>
+      <div class="seat-grid" id="seat-grid"></div>
+      <div class="carrito">
+        <h3>Seleccion de Asientos</h3>
+        <div class="carrito-items" id="carrito-items"><div style="color:var(--suave);font-size:.8rem;font-family:'Josefin Sans',sans-serif;">Selecciona asientos para continuar.</div></div>
+        <div class="carrito-total" id="carrito-total"></div>
+        <div class="carrito-btns">
+          <button class="btn-reservar" onclick="accionTicket('reservar')">Reservar</button>
+          <button class="btn-comprar-emp" id="btn-vender-emp" onclick="accionTicket('vender')" style="display:none;">Vender (Emp)</button>
+          <button class="btn-hero btn-primary" style="flex:1;padding:.65rem;font-size:.72rem;" onclick="accionTicket('comprar')">Agregar al Carrito</button>
+          <button onclick="clearCart()" style="padding:.65rem 1rem;border:1px solid #ddd;background:transparent;border-radius:5px;cursor:pointer;font-family:'Josefin Sans',sans-serif;font-size:.68rem;letter-spacing:.07em;text-transform:uppercase;">Limpiar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Comida step -->
+<div class="modal-overlay" id="modal-comida-step">
+  <div class="modal" style="max-width:580px;">
+    <div class="modal-header">
+      <div><h2>Agrega algo de comer?</h2><div class="modal-header-sub">Tus snacks llegaran a tu butaca</div></div>
+      <button class="modal-close" onclick="skipComida()">x</button>
+    </div>
+    <div class="modal-body">
+      <div class="comida-step-grid" id="comida-step-grid"></div>
+      <div style="display:flex;gap:.7rem;margin-top:.5rem;">
+        <button class="btn-auth" style="flex:2;" onclick="addComidaAndPay()">Agregar al Carrito y Pagar</button>
+        <button onclick="skipComida()" style="flex:1;padding:.7rem;border:1px solid #ddd;background:transparent;border-radius:6px;cursor:pointer;font-family:'Josefin Sans',sans-serif;font-size:.74rem;letter-spacing:.06em;text-transform:uppercase;">Saltar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Confirm -->
+<div class="modal-overlay" id="modal-confirm">
+  <div class="modal" style="max-width:400px;">
+    <div class="modal-header"><h2 id="confirm-title">Confirmar</h2><button class="modal-close" onclick="closeModal('modal-confirm')">x</button></div>
+    <div class="modal-body">
+      <div id="confirm-body" style="margin-bottom:1.4rem;font-size:.86rem;line-height:1.8;font-family:'Josefin Sans',sans-serif;"></div>
+      <div style="display:flex;gap:.75rem;">
+        <button id="confirm-yes" style="flex:1;padding:.68rem;background:var(--rojo);color:#fff;border:none;border-radius:5px;cursor:pointer;font-family:'Josefin Sans',sans-serif;font-size:.72rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;">Confirmar</button>
+        <button onclick="closeModal('modal-confirm')" style="flex:1;padding:.68rem;border:1px solid #ddd;background:transparent;border-radius:5px;cursor:pointer;font-family:'Josefin Sans',sans-serif;font-size:.72rem;letter-spacing:.06em;">Cancelar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Add Movie -->
+<div class="modal-overlay" id="modal-add-movie">
+  <div class="modal" style="max-width:620px;">
+    <div class="modal-header"><h2>Agregar Pelicula</h2><button class="modal-close" onclick="closeModal('modal-add-movie')">x</button></div>
+    <div class="modal-body">
+      <div class="add-movie-grid">
+        <div class="form-group full"><label>Titulo</label><input type="text" id="add-titulo" placeholder="Nombre de la pelicula"></div>
+        <div class="form-group"><label>Genero</label><select id="add-genero"><option>Accion</option><option>Comedia</option><option>Drama</option><option>Terror</option><option>Ciencia Ficcion</option><option>Familia</option><option>Animacion</option><option>Thriller</option></select></div>
+        <div class="form-group"><label>Duracion</label><input type="text" id="add-duracion" placeholder="2h 00m"></div>
+        <div class="form-group"><label>Clasificacion</label><select id="add-clasificacion"><option>G</option><option>PG</option><option>PG-13</option><option>R/12</option><option>R/14</option><option>R/16</option><option>R/18</option><option>S/R</option></select></div>
+        <div class="form-group"><label>Puntuacion</label><input type="number" id="add-puntuacion" placeholder="7.5" min="0" max="10" step="0.1"></div>
+        <div class="form-group"><label>Sala</label><select id="add-sala"><option value="S1">Sala 1 — Estandar (RD$280)</option><option value="S2">Sala 2 — VIP</option><option value="S3">Sala 3 — 4DX (RD$550)</option></select></div>
+        <div class="form-group full"><label>Horarios (separados por coma)</label><input type="text" id="add-horarios" placeholder="10:00, 13:00, 16:00, 19:00"></div>
+        <div class="form-group full"><label>Sinopsis</label><textarea id="add-sinopsis" rows="3" style="resize:vertical;"></textarea></div>
+      </div>
+      <button class="btn-auth" onclick="agregarPelicula()">Guardar Pelicula</button>
+    </div>
+  </div>
+</div>
+
+<!-- PAGO -->
+<div class="modal-overlay" id="modal-pago">
+  <div class="modal" style="max-width:490px;">
+    <div class="modal-header">
+      <div><h2>Pago Seguro</h2><div class="modal-header-sub" id="pago-subtitle">—</div></div>
+      <button class="modal-close" onclick="closeModal('modal-pago')">x</button>
+    </div>
+    <div class="modal-body">
+      <div class="pay-total-bar">
+        <div>
+          <div style="font-family:'Josefin Sans',sans-serif;font-size:.62rem;letter-spacing:.12em;text-transform:uppercase;color:var(--suave);">Total a Pagar</div>
+          <div class="total-num" id="pago-total">RD$ 0</div>
+        </div>
+        <div style="text-align:right;font-family:'Josefin Sans',sans-serif;font-size:.76rem;color:var(--suave);" id="pago-resumen-small">—</div>
+      </div>
+      <div class="pay-tabs">
+        <button class="pay-tab active" onclick="switchPayTab('tarjeta',this)">Tarjeta de Credito</button>
+        <button class="pay-tab" onclick="switchPayTab('transferencia',this)">Transferencia</button>
+      </div>
+      <!-- Tarjeta -->
+      <div class="pay-panel active" id="panel-tarjeta">
+        <div class="card-visual">
+          <div class="card-brand" id="cv-brand">CARD</div>
+          <div class="card-chip"></div>
+          <div class="card-number-display" id="cv-number">.... .... .... ....</div>
+          <div class="card-bottom">
+            <div><div class="card-label">Titular</div><div class="card-value" id="cv-name">NOMBRE APELLIDO</div></div>
+            <div><div class="card-label">Vence</div><div class="card-value" id="cv-exp">MM/AA</div></div>
+          </div>
+        </div>
+        <div style="display:grid;gap:.9rem;">
+          <div><label class="input-label">Numero de Tarjeta</label>
+            <input class="input-field" id="card-num" type="text" maxlength="19" placeholder="0000 0000 0000 0000" oninput="formatCardNum(this)" style="letter-spacing:.07em;"></div>
+          <div><label class="input-label">Titular de la Tarjeta</label>
+            <input class="input-field" id="card-name" type="text" placeholder="Como aparece en la tarjeta" oninput="document.getElementById('cv-name').textContent=this.value.toUpperCase()||'NOMBRE APELLIDO'"></div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:.9rem;">
+            <div><label class="input-label">Fecha de Vencimiento</label><input class="input-field" id="card-exp" type="text" maxlength="5" placeholder="MM/AA" oninput="formatExp(this)"></div>
+            <div><label class="input-label">Codigo CVV</label><input class="input-field" id="card-cvv" type="text" maxlength="4" placeholder="***" oninput="this.value=this.value.replace(/\D/g,'')"></div>
+          </div>
+        </div>
+        <div style="display:flex;align-items:center;gap:.5rem;font-family:'Josefin Sans',sans-serif;font-size:.7rem;color:var(--suave);margin:1.1rem 0;letter-spacing:.04em;">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+          Pago 100% seguro — Encriptacion SSL
+        </div>
+        <button class="btn-pay" onclick="procesarPago('tarjeta')">Pagar Ahora</button>
+      </div>
+      <!-- Transferencia -->
+      <div class="pay-panel" id="panel-transferencia">
+        <p style="font-family:'Josefin Sans',sans-serif;font-size:.78rem;color:var(--suave);margin-bottom:1rem;line-height:1.7;letter-spacing:.02em;">Transfiere el monto exacto a cualquiera de las cuentas siguientes e incluye el numero de referencia en el concepto.</p>
+        <div class="transfer-card">
+          <div style="font-family:'Josefin Sans',sans-serif;font-size:.62rem;letter-spacing:.15em;color:var(--terra);font-weight:700;margin-bottom:.55rem;text-transform:uppercase;">Banco Popular Dominicano</div>
+          <div class="transfer-row"><span class="t-label">Cuenta</span><span class="t-value">809-00123-4<button class="copy-btn" onclick="copyText('809-00123-4')">Copiar</button></span></div>
+          <div class="transfer-row"><span class="t-label">Tipo</span><span class="t-value">Corriente</span></div>
+          <div class="transfer-row"><span class="t-label">A nombre de</span><span class="t-value">Moviora Cines SRL</span></div>
+        </div>
+        <div class="transfer-card">
+          <div style="font-family:'Josefin Sans',sans-serif;font-size:.62rem;letter-spacing:.15em;color:var(--terra);font-weight:700;margin-bottom:.55rem;text-transform:uppercase;">Banreservas</div>
+          <div class="transfer-row"><span class="t-label">Cuenta</span><span class="t-value">2100045678<button class="copy-btn" onclick="copyText('2100045678')">Copiar</button></span></div>
+          <div class="transfer-row"><span class="t-label">Tipo</span><span class="t-value">Ahorros</span></div>
+          <div class="transfer-row"><span class="t-label">A nombre de</span><span class="t-value">Moviora Cines SRL</span></div>
+        </div>
+        <div class="transfer-ref">
+          <div style="font-family:'Josefin Sans',sans-serif;font-size:.6rem;letter-spacing:.15em;opacity:.62;margin-bottom:.25rem;text-transform:uppercase;">Tu Numero de Referencia</div>
+          <div class="ref-num" id="transfer-ref-num">MOV-000000</div>
+          <div style="font-family:'Josefin Sans',sans-serif;font-size:.68rem;opacity:.6;margin-top:.25rem;">Incluye este numero en el concepto de la transferencia</div>
+        </div>
+        <div class="upload-area" onclick="document.getElementById('comprobante-input').click()">
+          <input type="file" id="comprobante-input" accept="image/*,.pdf" onchange="handleComprobante(this)">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--suave)" stroke-width="1.5" style="margin-bottom:.45rem;"><path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"/></svg>
+          <div style="font-family:'Josefin Sans',sans-serif;font-size:.8rem;font-weight:700;color:var(--marino);" id="upload-label">Adjuntar comprobante de pago</div>
+          <div style="font-family:'Josefin Sans',sans-serif;font-size:.68rem;color:var(--suave);margin-top:.25rem;">JPG, PNG o PDF — max 5MB</div>
+        </div>
+        <button class="btn-pay" onclick="procesarPago('transferencia')" style="background:var(--marino);">Confirmar Transferencia</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Exito -->
+<div class="modal-overlay" id="modal-exito">
+  <div class="modal" style="max-width:430px;">
+    <div class="modal-body">
+      <div class="success-screen">
+        <div class="success-icon"><svg viewBox="0 0 24 24" fill="none" stroke="#065f46" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg></div>
+        <h2 style="font-family:'Playfair Display',serif;font-size:1.65rem;color:var(--marino);margin-bottom:.4rem;">Pago Confirmado</h2>
+        <p style="font-family:'Josefin Sans',sans-serif;color:var(--suave);font-size:.83rem;margin-bottom:.9rem;" id="exito-msg">Tu compra fue procesada exitosamente.</p>
+        <div class="ticket-preview" id="ticket-preview"></div>
+        <button class="btn-pay" onclick="finalizarPago()" style="margin-top:.4rem;">Ver mis tickets</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SPOTY -->
+<button class="chat-fab" onclick="toggleChat()" title="Spoty">
+  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.8">
+    <circle cx="12" cy="12" r="10"/>
+    <circle cx="8.5" cy="11" r="1.2" fill="white" stroke="none"/>
+    <circle cx="15.5" cy="11" r="1.2" fill="white" stroke="none"/>
+    <path d="M8.5 15.5 Q12 18 15.5 15.5" stroke-linecap="round"/>
+  </svg>
+  <span class="chat-fab-lbl">Spoty</span>
+</button>
+<div class="chat-panel" id="chat-panel">
+  <div class="chat-header">
+    <div class="chat-header-left">
+      <div class="spoty-avatar">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--terra)" stroke-width="2"><circle cx="12" cy="12" r="10"/><circle cx="8.5" cy="11" r="1" fill="var(--terra)" stroke="none"/><circle cx="15.5" cy="11" r="1" fill="var(--terra)" stroke="none"/><path d="M8.5 15.5 Q12 18 15.5 15.5" stroke-linecap="round"/></svg>
+      </div>
+      <div>
+        <div class="chat-title-name">Spoty</div>
+        <div class="chat-title-sub">Asistente Moviora — AI</div>
+      </div>
+    </div>
+    <button onclick="toggleChat()" style="background:transparent;border:none;color:rgba(255,255,255,.55);cursor:pointer;font-size:1.1rem;font-family:'Josefin Sans',sans-serif;">x</button>
+  </div>
+  <div class="chat-messages" id="chat-messages">
+    <div class="msg bot">Hola, soy Spoty. Puedo ayudarte con la cartelera, horarios, precios y recomendaciones. En que te puedo ayudar?</div>
+  </div>
+  <div class="chat-input-area">
+    <input type="text" id="chat-input" placeholder="Preguntame algo..." onkeydown="if(event.key==='Enter')sendChat()">
+    <button class="chat-send" onclick="sendChat()">Enviar</button>
+  </div>
+</div>
+
+<script>
+// ==================== DATA ====================
+const MOVIES_BASE=[
+  {id:1,titulo:'Scary Movie',genero:'Comedia',duracion:'1h 28m',clasificacion:'R/16',puntuacion:7.2,sala:'S1',sinopsis:'La iconica saga de parodias regresa con mas locura y humor irreverente.',activa:true},
+  {id:2,titulo:'Masters of the Universe',genero:'Ciencia Ficcion',duracion:'2h 21m',clasificacion:'PG-13',puntuacion:7.8,sala:'S1',sinopsis:'He-Man regresa en una epica batalla por el poder del universo.',activa:true},
+  {id:3,titulo:'Michael',genero:'Drama',duracion:'2h 22m',clasificacion:'PG-13',puntuacion:9.1,sala:'S2',sinopsis:'La historia definitiva del Rey del Pop Michael Jackson.',activa:true},
+  {id:4,titulo:'Obsession',genero:'Terror',duracion:'1h 52m',clasificacion:'R/18',puntuacion:7.0,sala:'S3',sinopsis:'Un thriller psicologico que te mantendra al borde del asiento.',activa:true},
+  {id:5,titulo:'The Devil Wears Prada 2',genero:'Drama',duracion:'1h 58m',clasificacion:'R/14',puntuacion:8.3,sala:'S2',sinopsis:'Miranda Priestly regresa con nuevos desafios en el mundo de la moda.',activa:true},
+  {id:6,titulo:'De tal palo, tal astilla',genero:'Comedia',duracion:'1h 45m',clasificacion:'R/12',puntuacion:8.0,sala:'S1',sinopsis:'Una comedia familiar sobre las generaciones que nos definen.',activa:true},
+  {id:7,titulo:'The Mandalorian & Grogu',genero:'Accion',duracion:'2h 15m',clasificacion:'R/14',puntuacion:8.9,sala:'S3',sinopsis:'El Mandaloriano y Grogu viven su aventura mas grande en pantalla.',activa:true},
+  {id:8,titulo:'Passenger',genero:'Terror',duracion:'1h 34m',clasificacion:'R/18',puntuacion:7.4,sala:'S2',sinopsis:'Un vuelo rutinario se convierte en pesadilla a 30,000 pies de altura.',activa:true},
+  {id:9,titulo:'Mortal Kombat II',genero:'Accion',duracion:'1h 56m',clasificacion:'R/18',puntuacion:7.6,sala:'S3',sinopsis:'El torneo mas brutal continua con consecuencias epicas.',activa:true},
+  {id:10,titulo:'The Super Mario Galaxy',genero:'Familia',duracion:'1h 38m',clasificacion:'R/12',puntuacion:8.5,sala:'S1',sinopsis:'Mario viaja al espacio en una aventura galactica llena de sorpresas.',activa:true},
+  {id:11,titulo:'Hoppers (Pixar)',genero:'Familia',duracion:'1h 42m',clasificacion:'S/R',puntuacion:8.7,sala:'S2',sinopsis:'Una historia de amistad y valentia desde la perspectiva de un saltamontes.',activa:true},
+  {id:12,titulo:'Big Trip 2',genero:'Animacion',duracion:'1h 30m',clasificacion:'S/R',puntuacion:7.5,sala:'S1',sinopsis:'El adorable panda y sus amigos estan de vuelta en una entrega especial.',activa:true},
+];
+const HORARIOS_BASE={
+  1:['12:00','14:30','17:00','19:30','22:00'],2:['11:30','14:00','16:30','19:00','21:30'],
+  3:['12:00','15:00','18:00','21:00'],4:['14:00','17:00','20:00','22:30'],
+  5:['11:00','13:30','16:00','18:30','21:00'],6:['12:30','15:00','17:30','20:00'],
+  7:['11:00','14:00','17:00','20:00','23:00'],8:['16:00','19:00','21:30','00:00'],
+  9:['13:00','16:00','19:00','22:00'],10:['10:00','12:00','14:00','16:00','18:00'],
+  11:['10:30','12:30','14:30','16:30'],12:['10:00','12:00','14:00'],
+};
+const SALAS_BASE={
+  S1:{id:'S1',nombre:'Sala 1 — Estandar',tipo:'estandar',capacidad:80,filas:8,columnas:10,precio_estandar:280,precio_vip:0,precio_pareja:0,descripcion:'Pantalla 4K con sonido Dolby Digital'},
+  S2:{id:'S2',nombre:'Sala 2 — VIP',tipo:'vip',capacidad:65,filas:6,columnas:10,precio_estandar:420,precio_vip:650,precio_pareja:1100,descripcion:'Butacas reclinables y servicio en sala'},
+  S3:{id:'S3',nombre:'Sala 3 — 4DX',tipo:'4dx',capacidad:50,filas:5,columnas:10,precio_estandar:550,precio_vip:0,precio_pareja:0,descripcion:'Efectos de movimiento, viento y agua'},
+};
+const EMPLEADOS=[
+  {id:'EMP-0001',nombre:'Carlos',apellido:'Mendez',correo:'carlos@moviora.com',password:'admin123',rol:'admin',turno:'Manana',activo:true},
+  {id:'EMP-0002',nombre:'Laura',apellido:'Jimenez',correo:'laura@moviora.com',password:'taquilla1',rol:'taquilla',turno:'Tarde',activo:true},
+  {id:'EMP-0003',nombre:'Miguel',apellido:'Torres',correo:'miguel@moviora.com',password:'proy2024',rol:'proyeccion',turno:'Noche',activo:true},
+  {id:'EMP-0004',nombre:'Ana',apellido:'Rosario',correo:'ana@moviora.com',password:'limpieza1',rol:'limpieza',turno:'Manana',activo:true},
+  {id:'EMP-0005',nombre:'Pedro',apellido:'Castillo',correo:'pedro@moviora.com',password:'taquilla2',rol:'taquilla',turno:'Noche',activo:false},
+  {id:'EMP-0006',nombre:'Sofia',apellido:'Herrera',correo:'sofia@moviora.com',password:'proy9999',rol:'proyeccion',turno:'Tarde',activo:true},
+];
+// Colores por genero para posters
+const GENRE_COLORS={
+  'Accion':['#1a1a2e','#e94560'],'Comedia':['#1b4332','#52b788'],
+  'Drama':['#2d1b33','#c77dff'],'Terror':['#0d0d0d','#e63946'],
+  'Ciencia Ficcion':['#0a1628','#4cc9f0'],'Familia':['#1a3a1a','#95d5b2'],
+  'Animacion':['#1a1a3e','#f4a261'],'Thriller':['#1c1c1c','#e9c46a'],
+  'default':['#1C3350','#C96A50']
+};
+// SVGs genero para posters
+const GENRE_SVG={
+  'Accion':'<svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>',
+  'Comedia':'<svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9" stroke-width="2.5" stroke-linecap="round"/><line x1="15" y1="9" x2="15.01" y2="9" stroke-width="2.5" stroke-linecap="round"/></svg>',
+  'Drama':'<svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>',
+  'Terror':'<svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>',
+  'Ciencia Ficcion':'<svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><path d="M8.56 2.75c4.37 6.03 6.02 9.42 8.03 17.72m2.54-15.38c-3.72 4.35-8.94 5.66-16.88 5.85m19.5 1.9c-3.5-.93-6.63-.82-8.94 0-2.58.92-5.01 2.86-7.44 6.32"/></svg>',
+  'Familia':'<svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>',
+  'Animacion':'<svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>',
+  'Thriller':'<svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16" stroke-width="2.5" stroke-linecap="round"/></svg>',
+  'default':'<svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>'
+};
+// Comida
+const COMIDA_ITEMS=[
+  {id:'c1',nombre:'Palomitas Dulces',desc:'Caramelizadas con mantequilla',precio:200,svg:'<svg viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="20" y="42" width="40" height="28" rx="4" fill="#C02B1A"/><text x="40" y="58" text-anchor="middle" font-size="9" fill="white" font-family="serif" font-weight="bold">MOVIORA</text><circle cx="28" cy="30" r="10" fill="#f4a261" opacity=".9"/><circle cx="40" cy="25" r="11" fill="#e76f51" opacity=".9"/><circle cx="52" cy="30" r="10" fill="#f4a261" opacity=".9"/><circle cx="34" cy="38" r="9" fill="#e76f51" opacity=".85"/><circle cx="46" cy="37" r="9" fill="#f4a261" opacity=".85"/></svg>'},
+  {id:'c2',nombre:'Palomitas Saladas',desc:'Con mantequilla y sal perfecta',precio:180,svg:'<svg viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="20" y="42" width="40" height="28" rx="4" fill="#1C3350"/><text x="40" y="58" text-anchor="middle" font-size="9" fill="white" font-family="serif" font-weight="bold">MOVIORA</text><circle cx="28" cy="30" r="10" fill="#e8e0d0" opacity=".9"/><circle cx="40" cy="25" r="11" fill="#f5f0e8" opacity=".9"/><circle cx="52" cy="30" r="10" fill="#e8e0d0" opacity=".9"/><circle cx="34" cy="38" r="9" fill="#f5f0e8" opacity=".85"/><circle cx="46" cy="37" r="9" fill="#e8e0d0" opacity=".85"/></svg>'},
+  {id:'c3',nombre:'Palomitas Agridulces',desc:'Mix de dulce y sal, perfectas',precio:220,svg:'<svg viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="20" y="42" width="40" height="28" rx="4" fill="#C96A50"/><text x="40" y="58" text-anchor="middle" font-size="9" fill="white" font-family="serif" font-weight="bold">MOVIORA</text><circle cx="28" cy="30" r="10" fill="#f4a261" opacity=".9"/><circle cx="40" cy="25" r="11" fill="#e8e0d0" opacity=".9"/><circle cx="52" cy="30" r="10" fill="#f4a261" opacity=".9"/><circle cx="34" cy="38" r="9" fill="#e8e0d0" opacity=".85"/><circle cx="46" cy="37" r="9" fill="#f4a261" opacity=".85"/></svg>'},
+  {id:'c4',nombre:'Gomitas',desc:'Surtido de colores y sabores',precio:150,svg:'<svg viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg"><ellipse cx="25" cy="45" rx="9" ry="11" fill="#e63946" opacity=".9"/><ellipse cx="40" cy="40" rx="9" ry="11" fill="#f4a261" opacity=".9"/><ellipse cx="55" cy="45" rx="9" ry="11" fill="#52b788" opacity=".9"/><ellipse cx="32" cy="55" rx="9" ry="11" fill="#4cc9f0" opacity=".9"/><ellipse cx="48" cy="55" rx="9" ry="11" fill="#c77dff" opacity=".9"/></svg>'},
+  {id:'c5',nombre:'Refresco Grande',desc:'Cualquier sabor, con hielo',precio:160,svg:'<svg viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="27" y="28" width="26" height="36" rx="4" fill="#4cc9f0" opacity=".85"/><rect x="27" y="20" width="26" height="10" rx="3" fill="#1C3350" opacity=".7"/><line x1="40" y1="10" x2="40" y2="22" stroke="#1C3350" stroke-width="2" stroke-dasharray="2 2"/><circle cx="40" cy="10" r="3" fill="#C96A50"/><rect x="30" y="31" width="20" height="4" rx="2" fill="white" opacity=".3"/><rect x="30" y="38" width="20" height="3" rx="2" fill="white" opacity=".2"/></svg>'},
+  {id:'c6',nombre:'Papitas',desc:'Crocantes y saladas al momento',precio:140,svg:'<svg viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M15 55 Q20 25 40 20 Q60 25 65 55 Z" fill="#f4d03f" opacity=".9"/><ellipse cx="40" cy="55" rx="25" ry="6" fill="#e67e22" opacity=".85"/><path d="M25 45 Q35 38 40 42 Q45 46 55 40" stroke="#e67e22" stroke-width="2" fill="none" opacity=".7"/><path d="M28 52 Q38 44 42 48 Q46 52 58 47" stroke="#e67e22" stroke-width="2" fill="none" opacity=".7"/></svg>'},
+  {id:'c7',nombre:'Dulces Surtidos',desc:'Chocolates y caramelos mixtos',precio:130,svg:'<svg viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="12" y="30" width="18" height="14" rx="4" fill="#e63946" opacity=".9"/><rect x="34" y="26" width="18" height="14" rx="4" fill="#4cc9f0" opacity=".9"/><rect x="52" y="32" width="16" height="13" rx="4" fill="#52b788" opacity=".9"/><rect x="20" y="48" width="18" height="13" rx="4" fill="#f4a261" opacity=".9"/><rect x="42" y="46" width="18" height="13" rx="4" fill="#c77dff" opacity=".9"/><circle cx="21" cy="37" r="3" fill="white" opacity=".4"/><circle cx="43" cy="33" r="3" fill="white" opacity=".4"/></svg>'},
+  {id:'c8',nombre:'Nachos con Queso',desc:'Crujientes con salsa de queso',precio:250,svg:'<svg viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg"><polygon points="15,65 40,20 65,65" fill="#f4d03f" opacity=".9"/><polygon points="22,65 40,32 58,65" fill="#e67e22" opacity=".7"/><ellipse cx="40" cy="65" rx="26" ry="7" fill="#f59e0b" opacity=".8"/><circle cx="30" cy="58" r="4" fill="#fbbf24" opacity=".9"/><circle cx="50" cy="55" r="4" fill="#fbbf24" opacity=".9"/><circle cx="40" cy="50" r="4" fill="#fbbf24" opacity=".9"/></svg>'},
+];
+
+// ==================== STATE ====================
+let currentUser=null;
+let movies=JSON.parse(localStorage.getItem('mv_movies')||JSON.stringify(MOVIES_BASE));
+let salas=JSON.parse(localStorage.getItem('mv_salas')||JSON.stringify(SALAS_BASE));
+let HORARIOS=JSON.parse(localStorage.getItem('mv_horarios')||JSON.stringify(HORARIOS_BASE));
+let clientes=JSON.parse(localStorage.getItem('mv_clientes')||'[]');
+let tickets=JSON.parse(localStorage.getItem('mv_tickets')||'[]');
+let seatStates=JSON.parse(localStorage.getItem('mv_seats')||'{}');
+let currentModal={movieId:null,hora:null};
+let seatCart=[]; // asientos seleccionados temporalmente
+let globalCart=[]; // carrito global {id,name,detail,price,type,qty}
+let pendingComidaQtys={}; // para el modal de comida step
+
+// ==================== INIT ====================
+document.addEventListener('DOMContentLoaded',()=>{
+  initStars();initFilmStrips();
+  renderMoviesGrid();renderComidaGrid();
+  const saved=sessionStorage.getItem('mv_session')||localStorage.getItem('mv_session');
+  if(saved){currentUser=JSON.parse(saved);updateNavForUser();}
+  document.addEventListener('click',e=>{
+    const wrap=document.getElementById('loc-wrap');
+    if(wrap&&!wrap.contains(e.target))closeLoc();
+  });
+});
+function save(){
+  localStorage.setItem('mv_movies',JSON.stringify(movies));
+  localStorage.setItem('mv_salas',JSON.stringify(salas));
+  localStorage.setItem('mv_horarios',JSON.stringify(HORARIOS));
+  localStorage.setItem('mv_clientes',JSON.stringify(clientes));
+  localStorage.setItem('mv_tickets',JSON.stringify(tickets));
+  localStorage.setItem('mv_seats',JSON.stringify(seatStates));
+}
+
+// ==================== VIEWS ====================
+function showView(name){
+  document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
+  document.getElementById('view-'+name).classList.add('active');
+  if(name==='cuenta'){if(!currentUser||currentUser.type!=='cliente'){showView('login');return;}renderCuenta();}
+  if(name==='dashboard'){if(!currentUser||currentUser.type!=='empleado'){showView('emp-login');return;}renderDashboard();}
+  if(name==='home'){window.scrollTo(0,0);updateHeroForUser();}
+  closeLoc();
+}
+function scrollToSection(id){
+  if(!document.getElementById('view-home').classList.contains('active'))showView('home');
+  setTimeout(()=>{const el=document.getElementById(id);if(el)el.scrollIntoView({behavior:'smooth'});},120);
+}
+function updateHeroForUser(){
+  const panel=document.getElementById('hero-user-panel');
+  const btns=document.getElementById('hero-btns');
+  const tagline=document.getElementById('hero-tagline');
+  const welcome=document.getElementById('hero-welcome');
+  if(currentUser&&currentUser.type==='cliente'){
+    welcome.textContent=`Bienvenido de vuelta, ${currentUser.data.nombre}`;
+    tagline.textContent='Bienvenido a Moviora Cines — que quieres ver hoy?';
+    btns.style.display='none';
+    panel.classList.add('show');
+  } else {
+    welcome.textContent='La experiencia cinematografica redefinida';
+    tagline.textContent='Donde cada pelicula se convierte en un recuerdo.';
+    btns.style.display='flex';
+    panel.classList.remove('show');
+  }
+}
+
+// ==================== LOCATIONS ====================
+function toggleLocations(e){e&&e.stopPropagation();const p=document.getElementById('loc-panel');const b=document.getElementById('loc-btn');const open=p.classList.contains('open');p.classList.toggle('open',!open);b.classList.toggle('open',!open);}
+function closeLoc(){document.getElementById('loc-panel')?.classList.remove('open');document.getElementById('loc-btn')?.classList.remove('open');}
+function selectLoc(loc){toast('Sucursal: '+loc,'info');closeLoc();}
+
+// ==================== STARS & FILM ====================
+function initStars(){const c=document.getElementById('stars-bg');if(!c)return;for(let i=0;i<70;i++){const s=document.createElement('div');s.className='star';const sz=Math.random()*2+.5;s.style.cssText=`width:${sz}px;height:${sz}px;top:${Math.random()*100}%;left:${Math.random()*100}%;animation-delay:${Math.random()*3}s;animation-duration:${2+Math.random()*2}s;`;c.appendChild(s);}}
+function initFilmStrips(){['film-strip','film-strip-2'].forEach(id=>{const el=document.getElementById(id);if(!el)return;let h='';for(let i=0;i<40;i++)h+=`<div class="film-hole"></div>`;el.innerHTML=h+h;});}
+
+// ==================== POSTER PLACEHOLDER ====================
+function getPosterBg(genero){const c=GENRE_COLORS[genero]||GENRE_COLORS.default;return`linear-gradient(160deg,${c[0]} 0%,${c[1]}55 100%)`;}
+function getPosterSvg(genero){return GENRE_SVG[genero]||GENRE_SVG.default;}
+function getPosterAccent(genero){const c=GENRE_COLORS[genero]||GENRE_COLORS.default;return c[1];}
+
+// ==================== MOVIES GRID ====================
+function renderMoviesGrid(){
+  const grid=document.getElementById('movies-grid');if(!grid)return;
+  grid.innerHTML='';
+  movies.filter(m=>m.activa).forEach((m,i)=>{
+    const sala=salas[m.sala];const total=sala.capacidad;const ocu=countOcupados(m.id);
+    const pct=Math.round((ocu/total)*100);const ocuCls=pct<60?'ocu-low':pct<95?'ocu-mid':'ocu-high';
+    const hrs=HORARIOS[m.id]||[];const precio=sala.precio_estandar;
+    const bg=getPosterBg(m.genero);const svg=getPosterSvg(m.genero);const accent=getPosterAccent(m.genero);
+    const card=document.createElement('div');card.className='movie-card';card.style.animationDelay=(i*.05)+'s';
+    card.innerHTML=`
+      <div class="movie-poster">
+        <div class="poster-placeholder" style="background:${bg};">
+          <div class="poster-genre-icon" style="color:${accent};">${svg}</div>
+          <div class="poster-title">${m.titulo}</div>
+          <div class="poster-rating">${m.puntuacion} / 10</div>
+        </div>
+        <span class="sala-badge sala-${sala.tipo}">${sala.nombre.split('—')[0].trim()}</span>
+      </div>
+      <div class="movie-info">
+        <div class="movie-title">${m.titulo}</div>
+        <div class="movie-meta"><span class="meta-tag">${m.genero}</span><span class="meta-tag">${m.duracion}</span><span class="meta-tag">${m.clasificacion}</span></div>
+        <div class="ocu-label">${ocu}/${total} asientos (${pct}%)</div>
+        <div class="ocupacion-bar"><div class="ocupacion-fill ${ocuCls}" style="width:${pct}%"></div></div>
+        <div class="horarios">${hrs.map(h=>`<button class="horario-btn ${pct>=100?'lleno':''}" onclick="openSalaModal(${m.id},'${h}',event)">${h}</button>`).join('')}</div>
+        <div class="price-tag">Desde <strong>RD$ ${precio.toLocaleString()}</strong></div>
+        <button class="btn-comprar" onclick="openSalaModal(${m.id},'${hrs[0]||''}',event)">Seleccionar Asientos</button>
+      </div>`;
+    grid.appendChild(card);
+  });
+}
+
+// ==================== COMIDA GRID ====================
+function renderComidaGrid(){
+  const grid=document.getElementById('comida-grid');if(!grid)return;grid.innerHTML='';
+  COMIDA_ITEMS.forEach(item=>{
+    const card=document.createElement('div');card.className='comida-card';card.id='cc-'+item.id;
+    card.innerHTML=`
+      <div class="comida-svg-wrap">${item.svg}</div>
+      <div class="comida-name">${item.nombre}</div>
+      <div class="comida-desc">${item.desc}</div>
+      <div class="comida-precio"><span>RD$ </span>${item.precio}</div>
+      <div class="comida-qty">
+        <button class="qty-btn" onclick="changeComidaQty('${item.id}',-1,event)">-</button>
+        <span class="qty-num" id="qty-${item.id}">0</span>
+        <button class="qty-btn" onclick="changeComidaQty('${item.id}',1,event)">+</button>
+      </div>`;
+    grid.appendChild(card);
+  });
+}
+function changeComidaQty(itemId,delta,e){
+  if(e)e.stopPropagation();
+  if(!currentUser){toast('Inicia sesion para agregar comida al carrito','warning');return;}
+  const item=COMIDA_ITEMS.find(i=>i.id===itemId);if(!item)return;
+  const qEl=document.getElementById('qty-'+itemId);
+  let qty=parseInt(qEl?.textContent||'0')+delta;qty=Math.max(0,qty);
+  if(qEl)qEl.textContent=qty;
+  const card=document.getElementById('cc-'+itemId);
+  if(card)card.classList.toggle('selected',qty>0);
+  // Sync to global cart
+  const existing=globalCart.findIndex(x=>x.id===itemId);
+  if(qty===0&&existing>=0){globalCart.splice(existing,1);}
+  else if(qty>0&&existing>=0){globalCart[existing].qty=qty;globalCart[existing].price=item.precio*qty;}
+  else if(qty>0){globalCart.push({id:itemId,name:item.nombre,detail:'Snack Bar',price:item.precio*qty,qty,type:'comida',unitPrice:item.precio});}
+  updateCartBadge();updateCartDrawer();
+}
+
+// ==================== SEAT MAP ====================
+function countOcupados(mid){let c=0;const ms=seatStates[mid];if(!ms)return 0;Object.values(ms).forEach(h=>Object.values(h).forEach(s=>{if(s!=='libre')c++;}));return c;}
+function countFuncion(mid,hora){let r=0,v=0;const ms=seatStates[mid]?.[hora]||{};const sala=salas[movies.find(m=>m.id===mid)?.sala];const tot=sala?.capacidad||0;Object.values(ms).forEach(s=>{if(s==='reservado')r++;else if(s==='vendido')v++;});return{libre:tot-r-v,reservado:r,vendido:v,total:tot};}
+function openSalaModal(mid,hora,e){
+  if(e)e.stopPropagation();if(!hora)return;
+  const movie=movies.find(m=>m.id===mid);if(!movie)return;
+  const sala=salas[movie.sala];currentModal={movieId:mid,hora};seatCart=[];
+  document.getElementById('modal-movie-title').textContent=movie.titulo;
+  document.getElementById('modal-movie-meta').textContent=`${sala.nombre} · ${movie.genero} · ${movie.duracion} · ${movie.clasificacion}`;
+  const hrs=HORARIOS[mid]||[];
+  document.getElementById('funciones-pills').innerHTML=hrs.map(h=>`<button class="funcion-pill ${h===hora?'active':''}" onclick="cambiarFuncion(${mid},'${h}',this)">${h}</button>`).join('');
+  renderSeatMap(mid,hora);updateCapBar(mid,hora);updateSeatCartUI();
+  document.getElementById('btn-vender-emp').style.display=(currentUser&&currentUser.type==='empleado')?'flex':'none';
+  openModal('modal-sala');
+}
+function cambiarFuncion(mid,hora,el){
+  currentModal.hora=hora;seatCart=[];
+  document.querySelectorAll('.funcion-pill').forEach(p=>p.classList.remove('active'));el.classList.add('active');
+  renderSeatMap(mid,hora);updateCapBar(mid,hora);updateSeatCartUI();
+}
+function getSeatType(sala,fila){if(sala.tipo==='vip'&&['E','F'].includes(fila))return 'vip';if(sala.tipo==='vip'&&fila==='P')return 'pareja';return 'estandar';}
+function getSeatPrice(sala,tipo){if(tipo==='vip')return sala.precio_vip||sala.precio_estandar;if(tipo==='pareja')return sala.precio_pareja||sala.precio_estandar;return sala.precio_estandar;}
+function renderSeatMap(mid,hora){
+  const movie=movies.find(m=>m.id===mid);const sala=salas[movie.sala];
+  const grid=document.getElementById('seat-grid');grid.innerHTML='';
+  if(!seatStates[mid])seatStates[mid]={};if(!seatStates[mid][hora])seatStates[mid][hora]={};
+  const states=seatStates[mid][hora];
+  const letters='ABCDEFGHIJKLMNOP';
+  const filas=sala.tipo==='vip'?['A','B','C','D','E','F','P']:[...Array(sala.filas)].map((_,i)=>letters[i]);
+  filas.forEach(fila=>{
+    const row=document.createElement('div');row.className='seat-row';
+    const lbl=document.createElement('div');lbl.className='row-label';lbl.textContent=fila;row.appendChild(lbl);
+    if(fila==='P'){
+      for(let c=1;c<=5;c++){
+        const key=`${fila}${c}`;const est=states[key]||'libre';
+        const seat=document.createElement('div');
+        seat.className=`seat pareja ${est} ${seatCart.find(s=>s.key===key)?'selected':''}`;
+        seat.textContent='PR';seat.title=`Pareja ${key}`;
+        if(est==='libre')seat.onclick=()=>toggleSeat(mid,hora,fila,c,'pareja',key);
+        row.appendChild(seat);
+        if(c===2){const a=document.createElement('div');a.className='aisle';row.appendChild(a);}
+      }
+    } else {
+      for(let c=1;c<=sala.columnas;c++){
+        if(c===6){const a=document.createElement('div');a.className='aisle';row.appendChild(a);}
+        const key=`${fila}${c}`;const tipo=getSeatType(sala,fila);const est=states[key]||'libre';
+        const seat=document.createElement('div');
+        seat.className=`seat ${tipo==='vip'?'vip':''} ${est} ${seatCart.find(s=>s.key===key)?'selected':''}`;
+        seat.textContent=est==='reservado'?'R':'';seat.title=`${fila}${c} · ${tipo} · ${est}`;
+        if(est==='libre')seat.onclick=()=>toggleSeat(mid,hora,fila,c,tipo,key);
+        row.appendChild(seat);
+      }
+    }
+    grid.appendChild(row);
+  });
+}
+function toggleSeat(mid,hora,fila,col,tipo,key){
+  const idx=seatCart.findIndex(s=>s.key===key);
+  const movie=movies.find(m=>m.id===mid);const sala=salas[movie.sala];const precio=getSeatPrice(sala,tipo);
+  if(idx>=0)seatCart.splice(idx,1);else seatCart.push({key,fila,col,tipo,precio,label:`${fila}${col}`});
+  renderSeatMap(mid,hora);updateSeatCartUI();
+}
+function updateCapBar(mid,hora){
+  const{libre,reservado,vendido,total}=countFuncion(mid,hora);
+  document.getElementById('capacity-bar').innerHTML=`
+    <div class="cap-item"><div class="cap-num cap-libre">${libre}</div><div class="cap-lbl">Disponibles</div></div>
+    <div class="cap-item"><div class="cap-num cap-reservado">${reservado}</div><div class="cap-lbl">Reservados</div></div>
+    <div class="cap-item"><div class="cap-num cap-vendido">${vendido}</div><div class="cap-lbl">Vendidos</div></div>
+    <div class="cap-item"><div class="cap-num" style="color:var(--marino);">${total}</div><div class="cap-lbl">Total</div></div>`;
+}
+function updateSeatCartUI(){
+  const items=document.getElementById('carrito-items');const totalEl=document.getElementById('carrito-total');
+  if(seatCart.length===0){items.innerHTML='<div style="color:var(--suave);font-size:.8rem;font-family:\'Josefin Sans\',sans-serif;">Selecciona asientos para continuar.</div>';totalEl.textContent='';return;}
+  items.innerHTML=seatCart.map(s=>`<div class="carrito-item"><span>Asiento ${s.label} (${s.tipo})</span><span style="font-weight:700;color:var(--rojo);">RD$ ${s.precio.toLocaleString()}</span></div>`).join('');
+  const tot=seatCart.reduce((s,c)=>s+c.precio,0);
+  totalEl.innerHTML=`Total: <span style="color:var(--rojo)">RD$ ${tot.toLocaleString()}</span>`;
+}
+function clearCart(){seatCart=[];renderSeatMap(currentModal.movieId,currentModal.hora);updateSeatCartUI();}
+
+// ==================== ACCIONES TICKET ====================
+function accionTicket(accion){
+  if(seatCart.length===0){toast('Selecciona al menos un asiento','warning');return;}
+  if(accion==='comprar'){
+    if(!currentUser){toast('Inicia sesion para comprar','warning');showView('login');return;}
+    // Add to global cart and open comida step
+    const movie=movies.find(m=>m.id===currentModal.movieId);
+    seatCart.forEach(s=>{
+      const cartId='seat-'+s.key+'-'+currentModal.hora;
+      const existing=globalCart.findIndex(x=>x.id===cartId);
+      const item={id:cartId,name:movie.titulo,detail:`Asiento ${s.label} (${s.tipo}) — ${currentModal.hora}`,price:s.precio,qty:1,type:'ticket',movieId:currentModal.movieId,hora:currentModal.hora,seatKey:s.key,seatData:s};
+      if(existing>=0)globalCart[existing]=item;else globalCart.push(item);
+    });
+    closeModal('modal-sala');updateCartBadge();updateCartDrawer();
+    // Show comida step
+    openComidaStep();
+    return;
+  }
+  if(accion==='reservar'){
+    if(!currentUser){toast('Inicia sesion para reservar','warning');return;}
+    confirmarTicketDirect('reservado');return;
+  }
+  if(accion==='vender'){
+    // Employee direct sale
+    confirmarTicketDirect('vendido');return;
+  }
+}
+function confirmarTicketDirect(estado){
+  const{movieId,hora}=currentModal;
+  if(!seatStates[movieId])seatStates[movieId]={};if(!seatStates[movieId][hora])seatStates[movieId][hora]={};
+  const movie=movies.find(m=>m.id===movieId);
+  seatCart.forEach(s=>{
+    seatStates[movieId][hora][s.key]=estado;
+    tickets.push({id:Date.now()+Math.random(),clienteId:currentUser?.data?.correo||'emp',movieTitle:movie.titulo,asiento:s.label,tipo:s.tipo,precio:s.precio,hora,accion:estado==='reservado'?'reservar':'vender',fecha:new Date().toISOString()});
+  });
+  save();seatCart=[];closeModal('modal-sala');renderMoviesGrid();renderSeatMap(movieId,hora);
+  if(document.getElementById('view-dashboard').classList.contains('active'))renderDashboard();
+  toast(`${estado==='reservado'?'Reserva':'Venta'} confirmada`,'success');
+}
+
+// ==================== COMIDA STEP ====================
+function openComidaStep(){
+  pendingComidaQtys={};
+  const grid=document.getElementById('comida-step-grid');grid.innerHTML='';
+  COMIDA_ITEMS.slice(0,6).forEach(item=>{
+    pendingComidaQtys[item.id]=0;
+    const card=document.createElement('div');card.className='comida-step-card';
+    card.innerHTML=`
+      <div style="width:55px;height:55px;margin:0 auto;">${item.svg}</div>
+      <div class="c-name">${item.nombre}</div>
+      <div class="c-price">RD$ ${item.precio}</div>
+      <div class="c-qty-row">
+        <button class="qty-btn" onclick="changePendingQty('${item.id}',-1,this)">-</button>
+        <span id="pq-${item.id}">0</span>
+        <button class="qty-btn" onclick="changePendingQty('${item.id}',1,this)">+</button>
+      </div>`;
+    grid.appendChild(card);
+  });
+  openModal('modal-comida-step');
+}
+function changePendingQty(itemId,delta){
+  pendingComidaQtys[itemId]=(pendingComidaQtys[itemId]||0)+delta;
+  if(pendingComidaQtys[itemId]<0)pendingComidaQtys[itemId]=0;
+  const el=document.getElementById('pq-'+itemId);if(el)el.textContent=pendingComidaQtys[itemId];
+}
+function addComidaAndPay(){
+  Object.entries(pendingComidaQtys).forEach(([itemId,qty])=>{
+    if(qty<=0)return;
+    const item=COMIDA_ITEMS.find(i=>i.id===itemId);if(!item)return;
+    const existing=globalCart.findIndex(x=>x.id===itemId);
+    const totalQty=(existing>=0?globalCart[existing].qty:0)+qty;
+    if(existing>=0){globalCart[existing].qty=totalQty;globalCart[existing].price=item.precio*totalQty;}
+    else globalCart.push({id:itemId,name:item.nombre,detail:'Snack Bar',price:item.precio*qty,qty,type:'comida',unitPrice:item.precio});
+    // Sync public qty displays
+    const qEl=document.getElementById('qty-'+itemId);if(qEl)qEl.textContent=totalQty;
+    const cc=document.getElementById('cc-'+itemId);if(cc)cc.classList.add('selected');
+  });
+  closeModal('modal-comida-step');updateCartBadge();updateCartDrawer();
+  openCartDrawer();
+}
+function skipComida(){closeModal('modal-comida-step');updateCartBadge();updateCartDrawer();openCartDrawer();}
+
+// ==================== GLOBAL CART ====================
+function updateCartBadge(){
+  const total=globalCart.reduce((s,x)=>s+x.qty,0);
+  const badge=document.getElementById('cart-badge');
+  if(badge){badge.textContent=total;badge.classList.toggle('show',total>0);}
+}
+function updateCartDrawer(){
+  const body=document.getElementById('cart-drawer-body');const totalEl=document.getElementById('cart-drawer-total');
+  if(!body)return;
+  if(globalCart.length===0){body.innerHTML='<div class="cart-empty">Tu carrito esta vacio.<br>Selecciona una pelicula o snack para empezar.</div>';if(totalEl)totalEl.textContent='RD$ 0';return;}
+  const tickets=globalCart.filter(x=>x.type==='ticket');
+  const comida=globalCart.filter(x=>x.type==='comida');
+  let html='';
+  if(tickets.length>0){
+    html+=`<div class="cart-section-title">Tickets de Pelicula</div>`;
+    tickets.forEach(x=>{html+=`<div class="cart-line"><div class="cart-line-name">${x.name}<br><span style="font-size:.68rem;color:var(--suave);">${x.detail}</span></div><span class="cart-line-price">RD$ ${x.price.toLocaleString()}</span><button class="cart-remove" onclick="removeCartItem('${x.id}')">Quitar</button></div>`;});
+  }
+  if(comida.length>0){
+    html+=`<div class="cart-section-title" style="margin-top:1rem;">Snack Bar</div>`;
+    comida.forEach(x=>{html+=`<div class="cart-line"><div class="cart-line-name">${x.name} x${x.qty}</div><span class="cart-line-price">RD$ ${x.price.toLocaleString()}</span><button class="cart-remove" onclick="removeCartItem('${x.id}')">Quitar</button></div>`;});
+  }
+  body.innerHTML=html;
+  const tot=globalCart.reduce((s,x)=>s+x.price,0);
+  if(totalEl)totalEl.textContent=`RD$ ${tot.toLocaleString()}`;
+}
+function removeCartItem(id){
+  const idx=globalCart.findIndex(x=>x.id===id);if(idx>=0)globalCart.splice(idx,1);
+  const qEl=document.getElementById('qty-'+id);if(qEl)qEl.textContent='0';
+  const cc=document.getElementById('cc-'+id);if(cc)cc.classList.remove('selected');
+  updateCartBadge();updateCartDrawer();
+}
+function openCartDrawer(){document.getElementById('cart-drawer').classList.add('open');document.getElementById('cart-overlay').classList.add('open');}
+function closeCartDrawer(){document.getElementById('cart-drawer').classList.remove('open');document.getElementById('cart-overlay').classList.remove('open');}
+function openPaymentFromCart(){
+  if(globalCart.length===0){toast('El carrito esta vacio','warning');return;}
+  if(!currentUser){toast('Inicia sesion para pagar','warning');showView('login');return;}
+  closeCartDrawer();openPayModal();
+}
+
+// ==================== PAYMENT ====================
+function openPayModal(){
+  const tot=globalCart.reduce((s,x)=>s+x.price,0);
+  const itemCount=globalCart.length;
+  document.getElementById('pago-subtitle').textContent=`${itemCount} item${itemCount>1?'s':''} en tu carrito`;
+  document.getElementById('pago-total').textContent=`RD$ ${tot.toLocaleString()}`;
+  const resumen=globalCart.map(x=>`${x.name}${x.qty>1?' x'+x.qty:''}`).join(', ');
+  document.getElementById('pago-resumen-small').textContent=resumen.length>60?resumen.substring(0,57)+'...':resumen;
+  document.getElementById('transfer-ref-num').textContent='MOV-'+Math.floor(100000+Math.random()*900000);
+  openModal('modal-pago');
+}
+function switchPayTab(tab,el){
+  document.querySelectorAll('.pay-tab').forEach(t=>t.classList.remove('active'));el.classList.add('active');
+  document.querySelectorAll('.pay-panel').forEach(p=>p.classList.remove('active'));
+  document.getElementById('panel-'+tab).classList.add('active');
+}
+function formatCardNum(input){
+  let v=input.value.replace(/\D/g,'').substring(0,16);
+  let f=v.match(/.{1,4}/g)?.join(' ')||v;
+  input.value=f;
+  const disp=f.padEnd(19,'.');document.getElementById('cv-number').textContent=disp||'.... .... .... ....';
+  const brand=v.startsWith('4')?'VISA':v.startsWith('5')?'MASTERCARD':v.startsWith('3')?'AMEX':'CARD';
+  document.getElementById('cv-brand').textContent=brand;
+}
+function formatExp(input){let v=input.value.replace(/\D/g,'');if(v.length>=2)v=v.substring(0,2)+'/'+v.substring(2,4);input.value=v;document.getElementById('cv-exp').textContent=v||'MM/AA';}
+function copyText(text){navigator.clipboard?.writeText(text).then(()=>toast('Copiado','success')).catch(()=>toast('No se pudo copiar','error'));}
+function handleComprobante(input){if(input.files[0])document.getElementById('upload-label').textContent=input.files[0].name;}
+function procesarPago(metodo){
+  if(metodo==='tarjeta'){
+    const num=document.getElementById('card-num').value.replace(/\s/g,'');
+    const name=document.getElementById('card-name').value.trim();
+    const exp=document.getElementById('card-exp').value;
+    const cvv=document.getElementById('card-cvv').value;
+    if(num.length<16||!name||exp.length<5||cvv.length<3){toast('Completa todos los datos de la tarjeta','warning');return;}
+  }
+  const tot=globalCart.reduce((s,x)=>s+x.price,0);
+  // Mark ticket seats as sold
+  globalCart.filter(x=>x.type==='ticket').forEach(x=>{
+    const{movieId,hora,seatKey,seatData}=x;
+    if(!seatStates[movieId])seatStates[movieId]={};if(!seatStates[movieId][hora])seatStates[movieId][hora]={};
+    seatStates[movieId][hora][seatKey]='vendido';
+    tickets.push({id:Date.now()+Math.random(),clienteId:currentUser?.data?.correo||'guest',movieTitle:x.name,asiento:seatData?.label||'',tipo:seatData?.tipo||'estandar',precio:x.price,hora,accion:'comprar',fecha:new Date().toISOString()});
+  });
+  // Log comida orders
+  globalCart.filter(x=>x.type==='comida').forEach(x=>{
+    tickets.push({id:Date.now()+Math.random(),clienteId:currentUser?.data?.correo||'guest',movieTitle:x.name,asiento:'Snack Bar',tipo:'comida',precio:x.price,hora:'—',accion:'comida',fecha:new Date().toISOString()});
+  });
+  save();
+  const summary=globalCart.map(x=>`${x.name}${x.qty>1?' x'+x.qty:''}`).join('<br>');
+  document.getElementById('ticket-preview').innerHTML=`
+    <div class="tp-row"><span style="color:var(--suave);">Items</span><div>${summary}</div></div>
+    <div class="tp-row"><span style="color:var(--suave);">Metodo</span><strong>${metodo==='tarjeta'?'Tarjeta de credito':'Transferencia bancaria'}</strong></div>
+    <div class="tp-row"><span style="color:var(--suave);">Total pagado</span><strong style="color:var(--rojo);">RD$ ${tot.toLocaleString()}</strong></div>
+    <div class="tp-row"><span style="color:var(--suave);">Estado</span><strong style="color:#22c55e;">Confirmado</strong></div>`;
+  globalCart=[];updateCartBadge();updateCartDrawer();
+  // Reset qty displays
+  COMIDA_ITEMS.forEach(item=>{const q=document.getElementById('qty-'+item.id);if(q)q.textContent='0';const c=document.getElementById('cc-'+item.id);if(c)c.classList.remove('selected');});
+  closeModal('modal-pago');renderMoviesGrid();
+  if(document.getElementById('view-dashboard').classList.contains('active'))renderDashboard();
+  openModal('modal-exito');
+}
+function finalizarPago(){closeModal('modal-exito');showView('cuenta');}
+
+// ==================== AUTH CLIENTE ====================
+function registrar(){
+  const n=document.getElementById('reg-nombre').value.trim();
+  const a=document.getElementById('reg-apellido').value.trim();
+  const c=document.getElementById('reg-correo').value.trim().toLowerCase();
+  const p=document.getElementById('reg-pass').value;
+  const cf=document.getElementById('reg-confirm').value;
+  const t=document.getElementById('reg-terms').checked;
+  if(!n||!a||!c||!p){toast('Completa todos los campos','warning');return;}
+  if(p!==cf){toast('Las contrasenas no coinciden','error');return;}
+  if(p.length<8){toast('La contrasena debe tener minimo 8 caracteres','error');return;}
+  if(!t){toast('Acepta los terminos','warning');return;}
+  if(clientes.find(x=>x.correo===c)){toast('Correo ya registrado','error');return;}
+  const cliente={id:Date.now(),nombre:n,apellido:a,correo:c,password:btoa(p),creado:new Date().toISOString()};
+  clientes.push(cliente);save();toast('Cuenta creada correctamente','success');
+  setTimeout(()=>showView('login'),1400);
+}
+function loginCliente(){
+  const c=document.getElementById('login-correo').value.trim().toLowerCase();
+  const p=document.getElementById('login-pass').value;
+  const r=document.getElementById('login-remember').checked;
+  const errEl=document.getElementById('login-error');
+  const cliente=clientes.find(x=>x.correo===c&&x.password===btoa(p));
+  if(!cliente){errEl.style.display='block';return;}
+  errEl.style.display='none';
+  const session={type:'cliente',data:cliente};currentUser=session;
+  const str=JSON.stringify(session);sessionStorage.setItem('mv_session',str);
+  if(r)localStorage.setItem('mv_session',str);
+  updateNavForUser();showView('home');toast(`Bienvenido, ${cliente.nombre}!`,'success');
+}
+function logout(){
+  currentUser=null;sessionStorage.removeItem('mv_session');localStorage.removeItem('mv_session');
+  updateNavForUser();showView('home');toast('Sesion cerrada','info');
+}
+function updateNavForUser(){
+  const guest=document.getElementById('nav-guest');const user=document.getElementById('nav-user');const init=document.getElementById('nav-initials');
+  if(currentUser){guest.style.display='none';user.style.display='block';init.textContent=(currentUser.data.nombre||'?')[0].toUpperCase();}
+  else{guest.style.display='flex';user.style.display='none';}
+  updateHeroForUser();
+}
+function checkEmailExists(input){const c=input.value.trim().toLowerCase();const m=document.getElementById('correo-msg');if(clientes.find(x=>x.correo===c)){m.innerHTML='<span style="color:#ef4444;">Correo ya registrado. <a onclick="showView(\'login\')" style="color:var(--rojo);cursor:pointer;font-weight:700;">Iniciar sesion</a></span>';input.classList.add('field-invalid');}else{m.textContent='';if(c)input.classList.add('field-valid');}}
+function validateField(input,type){if(type==='email'){const ok=/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(input.value);input.classList.toggle('field-valid',ok);input.classList.toggle('field-invalid',!ok&&input.value.length>0);}else{const ok=input.value.trim().length>0;input.classList.toggle('field-valid',ok);}}
+function checkPasswordStrength(input){const v=input.value;const bar=document.getElementById('strength-bar');const txt=document.getElementById('strength-text');if(!v){bar.className='strength-bar';txt.textContent='';return;}const strong=v.length>=10&&/[A-Z]/.test(v)&&/[0-9]/.test(v)&&/[^A-Za-z0-9]/.test(v);const medium=v.length>=8;if(strong){bar.className='strength-bar strong';txt.textContent='Contrasena fuerte';}else if(medium){bar.className='strength-bar medium';txt.textContent='Contrasena moderada';}else{bar.className='strength-bar weak';txt.textContent='Contrasena debil';}}
+function checkConfirm(input){const p=document.getElementById('reg-pass').value;input.classList.toggle('field-valid',input.value===p&&input.value.length>0);input.classList.toggle('field-invalid',input.value!==p&&input.value.length>0);}
+
+// ==================== AUTH EMPLEADO ====================
+function fillEmp(id,correo,pass){document.getElementById('emp-id').value=id;document.getElementById('emp-correo').value=correo;document.getElementById('emp-pass').value=pass;}
+function loginEmpleado(){
+  const id=document.getElementById('emp-id').value.trim().toUpperCase();
+  const correo=document.getElementById('emp-correo').value.trim().toLowerCase();
+  const pass=document.getElementById('emp-pass').value;
+  const errEl=document.getElementById('emp-error');
+  const emp=EMPLEADOS.find(e=>e.id===id&&e.correo===correo&&e.password===pass&&e.activo);
+  if(!emp){errEl.style.display='block';return;}
+  errEl.style.display='none';
+  const session={type:'empleado',data:emp};currentUser=session;
+  sessionStorage.setItem('mv_session',JSON.stringify(session));
+  updateNavForUser();showView('dashboard');
+}
+function logoutEmpleado(){currentUser=null;sessionStorage.removeItem('mv_session');localStorage.removeItem('mv_session');updateNavForUser();showView('home');toast('Sesion cerrada','info');}
+
+// ==================== DASHBOARD ====================
+function renderDashboard(){
+  if(!currentUser||currentUser.type!=='empleado')return;
+  const emp=currentUser.data;
+  document.getElementById('dash-emp-name').textContent=`${emp.nombre} ${emp.apellido||''}`;
+  const badge=document.getElementById('dash-rol-badge');badge.textContent=emp.rol.charAt(0).toUpperCase()+emp.rol.slice(1);badge.className=`rol-badge rol-${emp.rol}`;
+  document.getElementById('tab-empleados').classList.toggle('hidden-tab',emp.rol!=='admin');
+  renderDashStats();renderDashMovies();renderSalaCards();renderOrdersTable();
+  if(emp.rol==='admin')renderEmpTable();
+}
+function renderDashStats(){
+  const activas=movies.filter(m=>m.activa).length;
+  const totalSeats=Object.values(salas).reduce((s,sa)=>s+sa.capacidad,0);
+  const totalOcu=movies.reduce((s,m)=>s+countOcupados(m.id),0);
+  const vendidos=tickets.filter(t=>t.accion==='comprar'||t.accion==='vender').length;
+  const reservas=tickets.filter(t=>t.accion==='reservar').length;
+  const ingresos=tickets.filter(t=>t.accion==='comprar'||t.accion==='vender').reduce((s,t)=>s+t.precio,0);
+  document.getElementById('dash-stats').innerHTML=`
+    <div class="stat-card"><div class="stat-num">${activas}</div><div class="stat-lbl">Peliculas Activas</div></div>
+    <div class="stat-card"><div class="stat-num">${Object.keys(salas).length}</div><div class="stat-lbl">Salas</div></div>
+    <div class="stat-card"><div class="stat-num">${totalSeats-totalOcu}</div><div class="stat-lbl">Asientos Libres</div></div>
+    <div class="stat-card"><div class="stat-num">${vendidos}</div><div class="stat-lbl">Tickets Vendidos</div></div>
+    <div class="stat-card"><div class="stat-num">${reservas}</div><div class="stat-lbl">Reservaciones</div></div>
+    <div class="stat-card"><div class="stat-num" style="font-size:1.3rem;">RD$ ${ingresos.toLocaleString()}</div><div class="stat-lbl">Ingresos</div></div>`;
+}
+function renderDashMovies(){
+  const grid=document.getElementById('dash-movies-grid');if(!grid)return;
+  const isAdmin=currentUser?.data?.rol==='admin';grid.innerHTML='';
+  movies.filter(m=>m.activa).forEach(m=>{
+    const sala=salas[m.sala];const ocu=countOcupados(m.id);const pct=Math.round((ocu/sala.capacidad)*100);
+    const ocuCls=pct<60?'ocu-low':pct<95?'ocu-mid':'ocu-high';const hrs=HORARIOS[m.id]||[];
+    const bg=getPosterBg(m.genero);const svg=getPosterSvg(m.genero);
+    const card=document.createElement('div');card.className='dash-movie-card';
+    card.innerHTML=`
+      <div class="dash-poster">
+        <div class="dash-poster-ph" style="background:${bg};">${svg}<div class="dash-poster-ph-title">${m.titulo}</div></div>
+        <span class="sala-badge sala-${sala.tipo}" style="position:absolute;top:8px;left:8px;">${sala.nombre.split('—')[0].trim()}</span>
+        ${isAdmin?`<button onclick="eliminarPelicula(${m.id})" style="position:absolute;top:8px;right:8px;background:rgba(192,43,26,.88);color:#fff;border:none;border-radius:3px;padding:3px 8px;font-family:'Josefin Sans',sans-serif;font-size:.62rem;cursor:pointer;letter-spacing:.05em;">Eliminar</button>`:''}
+      </div>
+      <div class="dash-movie-info">
+        <div class="movie-title">${m.titulo}</div>
+        <div class="movie-meta"><span class="meta-tag">${m.genero}</span><span class="meta-tag">${m.duracion}</span></div>
+        <div class="ocu-label">${ocu}/${sala.capacidad} (${pct}%)</div>
+        <div class="ocupacion-bar"><div class="ocupacion-fill ${ocuCls}" style="width:${pct}%"></div></div>
+        <div class="horarios">${hrs.map(h=>{const{libre}=countFuncion(m.id,h);return`<button class="horario-btn ${libre===0?'lleno':''}" onclick="openSalaModal(${m.id},'${h}',event)">${h}${libre===0?' LLENO':''}</button>`;}).join('')}</div>
+      </div>`;
+    grid.appendChild(card);
+  });
+}
+function eliminarPelicula(id){if(!confirm('Eliminar pelicula?'))return;const idx=movies.findIndex(m=>m.id===id);if(idx>=0)movies[idx].activa=false;save();renderDashMovies();renderDashStats();renderMoviesGrid();toast('Pelicula eliminada','warning');}
+function switchDashTab(tab,el){
+  document.querySelectorAll('.dash-tab').forEach(t=>t.classList.remove('active'));el.classList.add('active');
+  ['cartelera','salas','pedidos','empleados'].forEach(t=>{const d=document.getElementById('dash-'+t);if(d)d.style.display='none';});
+  const target=document.getElementById('dash-'+tab);if(target)target.style.display='block';
+  if(tab==='pedidos')renderOrdersTable();
+}
+// Orders table
+function renderOrdersTable(){
+  const tbody=document.getElementById('orders-body');if(!tbody)return;
+  if(tickets.length===0){tbody.innerHTML='<tr><td colspan="6" style="text-align:center;padding:2rem;color:var(--suave);">No hay pedidos registrados.</td></tr>';return;}
+  const sorted=[...tickets].sort((a,b)=>new Date(b.fecha)-new Date(a.fecha));
+  tbody.innerHTML=sorted.map(t=>`
+    <tr>
+      <td style="font-size:.75rem;">${t.clienteId||'—'}</td>
+      <td>${t.movieTitle}</td>
+      <td style="color:var(--suave);font-size:.75rem;">${t.asiento||'—'}</td>
+      <td style="color:var(--rojo);font-weight:700;">RD$ ${t.precio.toLocaleString()}</td>
+      <td><span style="padding:2px 9px;border-radius:20px;font-size:.62rem;font-weight:700;background:${t.accion==='comprar'?'#d1fae5':t.accion==='reservar'?'#fef3c7':t.accion==='vender'?'#dbeafe':'#f3e8ff'};color:${t.accion==='comprar'?'#065f46':t.accion==='reservar'?'#78350f':t.accion==='vender'?'#1e40af':'#6b21a8'};">${t.accion}</span></td>
+      <td style="color:var(--suave);font-size:.72rem;">${new Date(t.fecha).toLocaleDateString('es-DO',{day:'2-digit',month:'2-digit',year:'2-digit',hour:'2-digit',minute:'2-digit'})}</td>
+    </tr>`).join('');
+}
+
+// ==================== SALAS ====================
+function renderSalaCards(){
+  const grid=document.getElementById('salas-grid');if(!grid)return;grid.innerHTML='';
+  Object.values(salas).forEach(sala=>{
+    const tipos={estandar:'Estandar',vip:'VIP','4dx':'4DX'};
+    const cols={estandar:'background:rgba(28,51,80,.08);color:var(--marino);',vip:'background:rgba(201,106,80,.12);color:var(--terra-osc);','4dx':'background:rgba(192,43,26,.08);color:var(--rojo-osc);'};
+    const totalPelis=movies.filter(m=>m.sala===sala.id&&m.activa).length;
+    const totalOcu=movies.filter(m=>m.sala===sala.id&&m.activa).reduce((s,m)=>s+countOcupados(m.id),0);
+    const maxPos=sala.capacidad*(totalPelis||1);const pctOcu=Math.min(100,Math.round((totalOcu/maxPos)*100));
+    const card=document.createElement('div');card.className='sala-card';
+    card.innerHTML=`
+      <span class="sala-tipo-badge" style="${cols[sala.tipo]}">${tipos[sala.tipo]}</span>
+      <h3 style="font-family:'Playfair Display',serif;font-size:1.15rem;color:var(--marino);">${sala.nombre}</h3>
+      <p style="font-size:.76rem;color:var(--suave);margin-top:.3rem;font-family:'Josefin Sans',sans-serif;">${sala.descripcion}</p>
+      <p style="font-size:.76rem;color:var(--suave);margin-top:.3rem;font-family:'Josefin Sans',sans-serif;">Capacidad: <strong style="color:var(--marino);">${sala.capacidad} asientos</strong></p>
+      <div class="ocu-label" style="margin-top:.55rem;">Ocupacion global: ${pctOcu}%</div>
+      <div class="sala-stat-bar"><div class="sala-stat-fill" style="width:${pctOcu}%;background:${pctOcu<60?'#22c55e':pctOcu<90?'#f59e0b':'#ef4444'}"></div></div>
+      <div class="sala-precio-grid">
+        <div class="sala-precio-item"><strong>RD$ ${sala.precio_estandar.toLocaleString()}</strong>Estandar</div>
+        ${sala.precio_vip>0?`<div class="sala-precio-item"><strong>RD$ ${sala.precio_vip.toLocaleString()}</strong>VIP</div>`:''}
+        ${sala.precio_pareja>0?`<div class="sala-precio-item"><strong>RD$ ${sala.precio_pareja.toLocaleString()}</strong>Pareja</div>`:''}
+      </div>
+      <div id="edit-f-${sala.id}" style="display:none;margin-top:1rem;border-top:1px solid #eee;padding-top:1rem;">
+        <div class="form-group"><label style="font-family:'Josefin Sans',sans-serif;font-size:.62rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--suave);display:block;margin-bottom:4px;">Nombre</label><input type="text" value="${sala.nombre}" id="en-${sala.id}" style="width:100%;padding:.48rem;border:1.5px solid #e2d9d6;border-radius:5px;font-family:'Josefin Sans',sans-serif;"></div>
+        <div class="form-group"><label style="font-family:'Josefin Sans',sans-serif;font-size:.62rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--suave);display:block;margin-bottom:4px;margin-top:.45rem;">Precio Estandar</label><input type="number" value="${sala.precio_estandar}" id="ep-${sala.id}" style="width:100%;padding:.48rem;border:1.5px solid #e2d9d6;border-radius:5px;font-family:'Josefin Sans',sans-serif;"></div>
+        <div style="display:flex;gap:.45rem;margin-top:.75rem;">
+          <button onclick="guardarSala('${sala.id}')" style="flex:1;padding:.45rem;background:var(--rojo);color:#fff;border:none;border-radius:4px;cursor:pointer;font-family:'Josefin Sans',sans-serif;font-size:.68rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;">Guardar</button>
+          <button onclick="document.getElementById('edit-f-${sala.id}').style.display='none'" style="flex:1;padding:.45rem;border:1px solid #ddd;background:transparent;border-radius:4px;cursor:pointer;font-family:'Josefin Sans',sans-serif;font-size:.68rem;">Cancelar</button>
+        </div>
+      </div>
+      <button class="btn-edit" onclick="document.getElementById('edit-f-${sala.id}').style.display='block';this.style.display='none'">Editar Sala</button>`;
+    grid.appendChild(card);
+  });
+}
+function guardarSala(sid){salas[sid].nombre=document.getElementById('en-'+sid).value;salas[sid].precio_estandar=parseInt(document.getElementById('ep-'+sid).value);save();renderSalaCards();toast('Sala actualizada','success');}
+
+// ==================== EMP TABLE ====================
+function renderEmpTable(){
+  const tbody=document.getElementById('emp-table-body');if(!tbody)return;
+  tbody.innerHTML=EMPLEADOS.map(e=>`<tr><td style="font-family:monospace;font-size:.75rem;">${e.id}</td><td>${e.nombre} ${e.apellido||''}</td><td style="color:var(--suave);font-size:.76rem;">${e.correo}</td><td><span class="rol-badge rol-${e.rol}">${e.rol}</span></td><td><span class="status-dot" style="background:${e.activo?'#22c55e':'#9ca3af'};"></span>${e.activo?'Activo':'Inactivo'}</td><td>${e.turno||'—'}</td></tr>`).join('');
+}
+
+// ==================== MI CUENTA ====================
+function renderCuenta(){
+  if(!currentUser||currentUser.type!=='cliente')return;
+  const c=currentUser.data;
+  document.getElementById('cuenta-avatar').textContent=(c.nombre||'?')[0].toUpperCase();
+  document.getElementById('cuenta-nombre').textContent=`${c.nombre} ${c.apellido||''}`;
+  document.getElementById('cuenta-correo').textContent=c.correo;
+  document.getElementById('cuenta-fecha').textContent=new Date(c.creado||Date.now()).toLocaleDateString('es-DO',{year:'numeric',month:'long',day:'numeric'});
+  const mis=tickets.filter(t=>t.clienteId===c.correo);
+  const tbody=document.getElementById('tickets-body');
+  if(mis.length===0){tbody.innerHTML='<tr><td colspan="6" style="text-align:center;padding:2rem;color:var(--suave);">No hay tickets aun.</td></tr>';return;}
+  tbody.innerHTML=[...mis].reverse().map(t=>`<tr><td>${t.movieTitle}</td><td>${t.asiento||'—'}</td><td>${t.tipo}</td><td style="color:var(--rojo);font-weight:700;">RD$ ${t.precio.toLocaleString()}</td><td>${t.hora}</td><td><span style="background:${t.accion==='comprar'?'#d1fae5':t.accion==='reservar'?'#fef3c7':'#dbeafe'};color:${t.accion==='comprar'?'#065f46':t.accion==='reservar'?'#78350f':'#1e40af'};padding:2px 8px;border-radius:3px;font-size:.65rem;font-family:'Josefin Sans',sans-serif;font-weight:700;letter-spacing:.05em;text-transform:uppercase;">${t.accion}</span></td></tr>`).join('');
+}
+
+// ==================== ADD MOVIE ====================
+function openAddMovieModal(){['add-titulo','add-horarios','add-sinopsis'].forEach(id=>document.getElementById(id).value='');openModal('modal-add-movie');}
+function agregarPelicula(){
+  const titulo=document.getElementById('add-titulo').value.trim();
+  const horariosRaw=document.getElementById('add-horarios').value;
+  if(!titulo||!horariosRaw){toast('Titulo y horarios son requeridos','warning');return;}
+  const newId=Math.max(...movies.map(m=>m.id),0)+1;
+  const hrsList=horariosRaw.split(',').map(h=>h.trim()).filter(Boolean);
+  movies.push({id:newId,titulo,genero:document.getElementById('add-genero').value,duracion:document.getElementById('add-duracion').value||'2h 00m',clasificacion:document.getElementById('add-clasificacion').value,puntuacion:parseFloat(document.getElementById('add-puntuacion').value)||7.0,sala:document.getElementById('add-sala').value,sinopsis:document.getElementById('add-sinopsis').value.trim(),activa:true});
+  HORARIOS[newId]=hrsList;save();closeModal('modal-add-movie');renderDashMovies();renderDashStats();renderMoviesGrid();toast(`"${titulo}" agregada a la cartelera`,'success');
+}
+
+// ==================== SPOTY ====================
+function toggleChat(){document.getElementById('chat-panel').classList.toggle('open');}
+async function sendChat(){
+  const input=document.getElementById('chat-input');const msg=input.value.trim();if(!msg)return;
+  input.value='';addMsg(msg,'user');const typing=addTyping();
+  const cartelera=movies.filter(m=>m.activa).map(m=>`${m.titulo} (${m.genero}, ${m.duracion}, ${m.clasificacion}, Puntuacion ${m.puntuacion}) en ${salas[m.sala]?.nombre}, desde RD$${salas[m.sala]?.precio_estandar}`).join('\n');
+  const snacks=COMIDA_ITEMS.map(i=>`${i.nombre} RD$${i.precio}`).join(', ');
+  const sys=`Eres Spoty, el asistente virtual de Moviora Cines en Santo Domingo, RD. Conoces la cartelera:\n${cartelera}\nSnack bar: ${snacks}\nPrecios: Sala 1 Estandar RD$280, Sala 2 VIP RD$420-1100, Sala 3 4DX RD$550. Responde en espanol, amable, breve, sin emojis.`;
+  try{
+    const res=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json','anthropic-dangerous-direct-browser-access':'true'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:400,system:sys,messages:[{role:'user',content:msg}]})});
+    const data=await res.json();typing.remove();
+    addMsg(data.content?.[0]?.text||'No pude responder en este momento.','bot');
+  }catch(e){
+    typing.remove();
+    const ml=msg.toLowerCase();let r='Puedo ayudarte con la cartelera, horarios, precios y snacks. Que necesitas?';
+    if(ml.includes('precio')||ml.includes('costo'))r='Sala 1 Estandar RD$280, Sala 2 VIP desde RD$420, Sala 3 4DX RD$550. Snacks desde RD$130.';
+    else if(ml.includes('accion'))r='Para accion tenemos The Mandalorian & Grogu y Mortal Kombat II, ambas disponibles en Sala 3 — 4DX.';
+    else if(ml.includes('familia')||ml.includes('nino'))r='Para familia: Hoppers de Pixar, Super Mario Galaxy y Big Trip 2. Todas excelentes para toda la familia.';
+    else if(ml.includes('terror'))r='Tenemos Obsession en 4DX y Passenger en Sala VIP. Dos experiencias muy diferentes de suspenso.';
+    else if(ml.includes('comer')||ml.includes('palomitas')||ml.includes('snack'))r='Snack Bar: palomitas dulces RD$200, saladas RD$180, agridulces RD$220, nachos RD$250, refrescos RD$160 y mas.';
+    addMsg(r,'bot');
+  }
+}
+function addMsg(text,type){const msgs=document.getElementById('chat-messages');const div=document.createElement('div');div.className=`msg ${type}`;div.textContent=text;msgs.appendChild(div);msgs.scrollTop=msgs.scrollHeight;return div;}
+function addTyping(){const msgs=document.getElementById('chat-messages');const div=document.createElement('div');div.className='msg typing';div.innerHTML='<div class="dot-anim"><span></span><span></span><span></span></div>';msgs.appendChild(div);msgs.scrollTop=msgs.scrollHeight;return div;}
+
+// ==================== MODALES ====================
+function openModal(id){document.getElementById(id).classList.add('open');}
+function closeModal(id){document.getElementById(id).classList.remove('open');}
+document.querySelectorAll('.modal-overlay').forEach(ov=>{ov.addEventListener('click',e=>{if(e.target===ov)ov.classList.remove('open');});});
+
+// ==================== TOAST ====================
+function toast(msg,type='info'){const c=document.getElementById('toast-container');const t=document.createElement('div');t.className=`toast ${type}`;t.textContent=msg;c.appendChild(t);setTimeout(()=>t.remove(),3000);}
+</script>
+</body>
+</html>
+HTMLEOF
+echo "Done: $(wc -c < /mnt/user-data/outputs/moviora_cines.html) bytes"
+Salida
+
+Command argument is 147_531 bytes, exceeding the 100_000-byte per-argument limit. For large content, pipe via stdin or use a file-write API instead of embedding the content inline in the command. Argument preview: 'cat > /mnt/user-data/outputs/moviora_cines.html << \'HTMLEOF\'\n<!DOCTYPE html>\n<html lang="es">\n<head>\n<meta charset="UTF-8">\n<meta name="viewport" content="width=device-width, initial-scale=1.0">\n<titl'
+Listo
